@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    android:background="@color/colorBackground">
+
+
+    <include
+        layout="@layout/app_bar_layout"
+        android:id="@+id/login_settings_toolbar"
+        >
+
+    </include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_settings_toolbar"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/set_login_profile_image"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/profile_image"
+                app:civ_border_width="5dp"
+                app:civ_border_color="@color/colorTitle"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/set_login_user_name"
+                android:layout_below="@+id/set_login_profile_image"
+                android:inputType="textImeMultiLine"
+                android:hint="Username"
+                android:textAlignment="center"
+                android:textColorHint="@color/colorAccent"
+                android:drawableStart="@drawable/edit_profile"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/inputs2"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:padding="6dp"
+                android:layout_marginTop="30dp"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/set_login_profile_status"
+                android:layout_below="@+id/set_login_user_name"
+                android:inputType="textImeMultiLine"
+                android:hint="Status"
+                android:textAlignment="center"
+                android:textColorHint="@color/colorAccent"
+                android:drawableStart="@drawable/edit_status"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/inputs2"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:padding="6dp"
+                android:layout_marginTop="10dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/update_login_settings_button"
+                android:layout_below="@+id/set_login_profile_status"
+                android:inputType="textImeMultiLine"
+                android:text="Update"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/button2"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:padding="6dp"
+                android:layout_marginTop="30dp"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <include
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/main_toolbar"/>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:background="@color/colorBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_navigation_bar"
+            android:layout_below="@+id/main_page_toolbar"/>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_bar"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_alignParentBottom="true"
+            app:itemIconSize="25dp"
+            app:itemIconTint="@drawable/color_icon2"
+            app:itemTextColor="@drawable/color_icon2"
+            app:menu="@menu/mainactivity"/>
+
+    </RelativeLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/navigation_view"
+        android:background="#212121"
+        android:elevation="16dp"
+        app:menu="@menu/drawer"
+        app:headerLayout="@layout/header"
+        app:itemIconSize="25dp"
+        app:itemTextColor="@drawable/icon_color"
+        app:itemIconTint="@color/colorEditText"
+        android:layout_gravity="start">
+    </com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>
