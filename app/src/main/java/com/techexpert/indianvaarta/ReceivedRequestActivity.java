@@ -57,9 +57,14 @@ public class ReceivedRequestActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setTitle("Chat Request");
 
-
         mAuth = FirebaseAuth.getInstance();
-        currentUserID = mAuth.getCurrentUser().getUid();
+
+        if(mAuth.getCurrentUser()!=null)
+        {
+            currentUserID = mAuth.getCurrentUser().getUid();
+        }
+//        mAuth = FirebaseAuth.getInstance();
+//        currentUserID = mAuth.getCurrentUser().getUid();
 
         myRequestList = findViewById(R.id.rec_request_list);
         myRequestList.setLayoutManager(new LinearLayoutManager(this));

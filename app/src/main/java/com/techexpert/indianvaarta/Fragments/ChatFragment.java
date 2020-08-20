@@ -1,4 +1,4 @@
-package com.techexpert.indianvaarta;
+package com.techexpert.indianvaarta.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,9 +20,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.techexpert.indianvaarta.ChatActivity;
+import com.techexpert.indianvaarta.LoginActivity;
+import com.techexpert.indianvaarta.Notifications.Token;
+import com.techexpert.indianvaarta.R;
+import com.techexpert.indianvaarta.contacts;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -63,12 +69,10 @@ public class ChatFragment extends Fragment
         }
         else
         {
-            Intent loginIntent=new Intent(getContext(),LoginActivity.class);
+            Intent loginIntent=new Intent(getContext(), LoginActivity.class);
             loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(loginIntent);
         }
-
-
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         ChatsRef = FirebaseDatabase.getInstance().getReference()
@@ -77,8 +81,17 @@ public class ChatFragment extends Fragment
         chatList = private_chats_view.findViewById(R.id.chats_list);
         chatList.setLayoutManager(new LinearLayoutManager(getContext()));
 
+       // updateToken(FirebaseInstanceId.getInstance().getToken());
+
         return private_chats_view;
     }
+
+//    private void updateToken(String token)
+//    {
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+//        Token token1 = new Token(token);
+//        reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token1);
+//    }
 
     @Override
     public void onStart()

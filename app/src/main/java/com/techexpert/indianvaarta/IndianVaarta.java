@@ -13,7 +13,6 @@ public class IndianVaarta extends Application
     public void onCreate() {
         super.onCreate();
 
-
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         Picasso.Builder builder = new Picasso.Builder(this);
@@ -22,10 +21,5 @@ public class IndianVaarta extends Application
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
-
-
-
     }
-
-
 }

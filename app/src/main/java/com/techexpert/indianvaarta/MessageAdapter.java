@@ -45,6 +45,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 
@@ -190,7 +191,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.messageSenderPicture.setVisibility(View.VISIBLE);
                 holder.mediaStatus.setVisibility(View.GONE);
 
-                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=ce8a3a4c-a865-40a3-8952-cab6ad342d8d")
+                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=04c61f69-4412-418a-af7f-4f9fd892c947")
                         .networkPolicy(NetworkPolicy.OFFLINE)
                         .placeholder(R.drawable.profile)
                         .into(holder.messageSenderPicture, new Callback() {
@@ -201,7 +202,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             public void onError(Exception e)
                             {
                                 Picasso.get()
-                                        .load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=ce8a3a4c-a865-40a3-8952-cab6ad342d8d")
+                                        .load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=04c61f69-4412-418a-af7f-4f9fd892c947")
                                         .into(holder.messageSenderPicture);
                             }
                         });
@@ -211,7 +212,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.receiverProfileImage.setVisibility(View.VISIBLE);
                 holder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
-                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=ce8a3a4c-a865-40a3-8952-cab6ad342d8d")
+                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=04c61f69-4412-418a-af7f-4f9fd892c947")
                         .networkPolicy(NetworkPolicy.OFFLINE)
                         .placeholder(R.drawable.profile)
                         .into(holder.messageReceiverPicture, new Callback() {
@@ -222,7 +223,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             public void onError(Exception e)
                             {
                                 Picasso.get()
-                                        .load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=ce8a3a4c-a865-40a3-8952-cab6ad342d8d")
+                                        .load("https://firebasestorage.googleapis.com/v0/b/vaarta-fe184.appspot.com/o/Image%20Files%2Fsendimage.png?alt=media&token=04c61f69-4412-418a-af7f-4f9fd892c947")
                                         .into(holder.messageReceiverPicture);
                             }
                         });
@@ -304,47 +305,59 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                if(which == 0)
                                {
 
-                                   File InputFile = new File(userMessagesList.get(position).getName());
+                                   final File FileFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Documents" + File.separator+"Sent");
 
-                                   String filename = InputFile.getName();
-
-                                   InputFile = new File(InputFile.getAbsolutePath());
-
-                                   String dir = InputFile.getParent();
-
-                                   String dir2 = dir.substring(9);
-
-                                   File parent =new File(Environment.getExternalStorageDirectory()+ File.separator+dir2);
-
-                                   File InputF = new File(parent,filename);
-
-                                   if(InputF.exists())
+                                   if(userMessagesList.get(position).getType().equals("docx"))
                                    {
-                                       Intent intent = new Intent();
-                                       intent.setAction(android.content.Intent.ACTION_VIEW);
-                                       //Uri uri = Uri.parse(InputF.getAbsolutePath());
-                                       Uri uri = Uri.fromFile(InputF);
-                                       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                       File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".docx");
+
+                                       if(InputF.exists())
                                        {
-                                           uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
-                                       }
-                                       intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                       if(userMessagesList.get(position).getType().equals("pdf"))
-                                       {
-                                           intent.setDataAndType(uri,"application/pdf");
-                                       }
-                                       else if(userMessagesList.get(position).getType().equals("docx"))
-                                       {
+                                           Intent intent = new Intent();
+                                           intent.setAction(android.content.Intent.ACTION_VIEW);
+                                           //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                           Uri uri = Uri.fromFile(InputF);
+                                           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                           {
+                                               uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                           }
+                                           intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                                            intent.setDataAndType(uri,"application/docx");
+
+                                           holder.itemView.getContext().startActivity(intent);
                                        }
-                                       holder.itemView.getContext().startActivity(intent);
+                                       else
+                                       {
+                                           Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                       }
                                    }
-                                   else
+
+                                   else if(userMessagesList.get(position).getType().equals("pdf"))
                                    {
-                                       Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                       File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".pdf");
+
+                                       if(InputF.exists())
+                                       {
+                                           Intent intent = new Intent();
+                                           intent.setAction(android.content.Intent.ACTION_VIEW);
+                                           //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                           Uri uri = Uri.fromFile(InputF);
+                                           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                           {
+                                               uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                           }
+                                           intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                                           intent.setDataAndType(uri,"application/pdf");
+
+                                           holder.itemView.getContext().startActivity(intent);
+                                       }
+                                       else
+                                       {
+                                           Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                       }
                                    }
-
-
                                }
                                else if(which == 1)
                                 {
@@ -423,20 +436,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                 if(which == 0)
                                 {
 
-                                    File InputFile = new File(userMessagesList.get(position).getName());
+                                    final File ImageFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Images" + File.separator+"Sent");
 
-                                    //getting name of pdf file
-                                    String filename = InputFile.getName();
+                                    //opening the file which you have sent
 
-                                    InputFile = new File(InputFile.getAbsolutePath());
+                                    File InputF = new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
 
-                                    String dir = InputFile.getParent();
-
-                                    String dir2 = dir.substring(9);
-
-                                    File parent =new File(Environment.getExternalStorageDirectory()+ File.separator+dir2);
-
-                                    File InputF = new File(parent,filename);
 
                                     if(InputF.exists())
                                     {

@@ -2,12 +2,11 @@ package com.techexpert.indianvaarta;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +28,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.techexpert.indianvaarta.Fragments.ChatFragment;
+import com.techexpert.indianvaarta.Fragments.ContactFragment;
+import com.techexpert.indianvaarta.Fragments.GroupFragment;
+import com.techexpert.indianvaarta.Notifications.Token;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -171,6 +175,23 @@ public class MainActivity extends AppCompatActivity
 
         });
 
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    private void updateToken(String token)
+    {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        if(mAuth.getCurrentUser()!=null)
+        {
+            currentUser = mAuth.getCurrentUser();
+            currentUserID = mAuth.getCurrentUser().getUid();
+        }
+        reference.child(currentUserID).setValue(token1);
     }
 
 
@@ -402,6 +423,8 @@ public class MainActivity extends AppCompatActivity
 
     static void UpdateUserStatus(String state)
     {
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String saveCurrentTime, saveCurrentDate;
 
         Calendar calendar = Calendar.getInstance();
@@ -419,9 +442,9 @@ public class MainActivity extends AppCompatActivity
 
        DatabaseReference rootRef =  FirebaseDatabase.getInstance().getReference();
 
-       if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+       if(mAuth.getCurrentUser()!=null)
         {
-            String currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String currentUserID = mAuth.getCurrentUser().getUid();
             rootRef.child("Users").child(currentUserID).child("userState")
                     .updateChildren(OnlineStateMap);
         }
@@ -490,4 +513,18 @@ public class MainActivity extends AppCompatActivity
                 .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
     }
+
+    private void SharedPreferences()
+    {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()!=null)
+        {
+            String currentUserID = mAuth.getCurrentUser().getUid();
+            SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("Current_USERID",currentUserID);
+            editor.apply();
+        }
+    }
+
 }

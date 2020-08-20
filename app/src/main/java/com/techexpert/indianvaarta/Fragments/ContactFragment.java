@@ -1,4 +1,4 @@
-package com.techexpert.indianvaarta;
+package com.techexpert.indianvaarta.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.techexpert.indianvaarta.R;
+import com.techexpert.indianvaarta.contacts;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
