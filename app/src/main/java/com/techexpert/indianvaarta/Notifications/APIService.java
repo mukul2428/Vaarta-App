@@ -1,8 +1,5 @@
 package com.techexpert.indianvaarta.Notifications;
 
-import com.techexpert.indianvaarta.Notifications.MyResponse;
-import com.techexpert.indianvaarta.Notifications.Sender;
-
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;

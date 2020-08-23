@@ -10,6 +10,8 @@ import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 
+import com.techexpert.indianvaarta.R;
+
 public class NotificationOreo extends ContextWrapper
 {
 
@@ -55,55 +57,7 @@ public class NotificationOreo extends ContextWrapper
                 .setContentText(body)
                 .setSound(soundUri)
                 .setAutoCancel(true)
-                .setSmallIcon(Integer.parseInt(icon));
+                .setSmallIcon(R.drawable.vaarta);
     }
 
-//    @Override
-//    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-//        super.onMessageReceived(remoteMessage);
-//
-//        String sent = remoteMessage.getData().get("sent");
-//
-//        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        if(firebaseUser!=null && sent.equals(firebaseUser.getUid()))
-//        {
-//            sendNotification(remoteMessage);
-//        }
-//    }
-//
-//    private void sendNotification(RemoteMessage remoteMessage)
-//    {
-//        String user = remoteMessage.getData().get("user");
-//        String icon = remoteMessage.getData().get("icon");
-//        String title = remoteMessage.getData().get("title");
-//        String body = remoteMessage.getData().get("body");
-//
-//        RemoteMessage.Notification notification = remoteMessage.getNotification();
-//        int j = Integer.parseInt(user.replaceAll("[\\D]",""));
-//        Intent intent = new Intent(this, ChatActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("userid",user);
-//        intent.putExtras(bundle);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this,j,intent,PendingIntent.FLAG_ONE_SHOT);
-//
-//        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-//                .setSmallIcon(Integer.parseInt(icon))
-//                .setContentTitle(title)
-//                .setContentText(body)
-//                .setAutoCancel(true)
-//                .setSound(defaultSound)
-//                .setContentIntent(pendingIntent);
-//        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        int i=0;
-//        if(j>0)
-//        {
-//            i=j;
-//        }
-//
-//        notificationManager.notify(i,builder.build());
-//    }
 }

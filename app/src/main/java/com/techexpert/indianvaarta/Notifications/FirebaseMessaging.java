@@ -17,9 +17,12 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.techexpert.indianvaarta.ChatActivity;
+import com.techexpert.indianvaarta.MainActivity;
 import com.techexpert.indianvaarta.R;
 
 public class FirebaseMessaging extends FirebaseMessagingService
@@ -33,7 +36,9 @@ public class FirebaseMessaging extends FirebaseMessagingService
         Log.e(TAG, "From: " + remoteMessage.getFrom());
 
         if (remoteMessage == null)
+        {
             return;
+        }
 
         String sent = remoteMessage.getData().get("sent");
         String user = remoteMessage.getData().get("user");
@@ -43,6 +48,7 @@ public class FirebaseMessaging extends FirebaseMessagingService
         {
 
             FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
             SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
             String savedCurrentUser = sp.getString("Current_USERID","NONE");
 
@@ -69,14 +75,22 @@ public class FirebaseMessaging extends FirebaseMessagingService
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
         String user = remoteMessage.getData().get("user");
+        String name = remoteMessage.getData().get("name");
+        String pic = remoteMessage.getData().get("pic");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
+
         Intent intent = new Intent(this, ChatActivity.class);
+
         Bundle bundle = new Bundle();
         bundle.putString("visit_user_id",user);
+        bundle.putString("visit_user_name",name);
+        bundle.putString("user_image",pic);
+
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this,j,intent,PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -104,14 +118,22 @@ public class FirebaseMessaging extends FirebaseMessagingService
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
         String user = remoteMessage.getData().get("user");
+        String name = remoteMessage.getData().get("name");
+        String pic = remoteMessage.getData().get("pic");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
+
         Intent intent = new Intent(this, ChatActivity.class);
+
         Bundle bundle = new Bundle();
         bundle.putString("visit_user_id",user);
+        bundle.putString("visit_user_name",name);
+        bundle.putString("user_image",pic);
+
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this,j,intent,PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

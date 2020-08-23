@@ -261,6 +261,12 @@ public class ChatActivity extends AppCompatActivity
         MainActivity.UpdateUserStatus("offline");
     }
 
+//    @Override
+//    protected void onDestroy() {
+//        MainActivity.UpdateUserStatus("offline");
+//        super.onDestroy();
+//    }
+
     private void InitializeControllers()
     {
 
@@ -691,7 +697,7 @@ public class ChatActivity extends AppCompatActivity
                     {
                         Toast.makeText(ChatActivity.this, "Message Sent", Toast.LENGTH_SHORT).show();
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(messageSenderID);
+                        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(messageSenderID);
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot)
@@ -700,7 +706,7 @@ public class ChatActivity extends AppCompatActivity
                                 contacts user = snapshot.getValue(contacts.class);
                                 if(notify)
                                 {
-                                    sendNotification(messageReceiverID,user.getName(),MessageText);
+                                    sendNotification(messageReceiverID,user.getName(),MessageText, user.getName(), user.getImage());
                                 }
 
                                 notify = false;
@@ -724,7 +730,7 @@ public class ChatActivity extends AppCompatActivity
         }
     }
 
-    private void sendNotification(final String receiver, final String userName, final String message)
+    private void sendNotification(final String receiver, final String userName, final String message, final String Name, final String Image)
     {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
@@ -735,8 +741,8 @@ public class ChatActivity extends AppCompatActivity
                 for(DataSnapshot snapshot1 : snapshot.getChildren())
                 {
                     Token token = snapshot1.getValue(Token.class);
-                    Data data = new Data(messageSenderID,R.mipmap.ic_launcher,userName+": "+message,
-                            "New Message", messageReceiverID);
+                    Data data = new Data(messageSenderID,R.mipmap.ic_launcher,message,
+                            Name, messageReceiverID, Name, Image);
 
                     Sender sender = new Sender(data, token.getToken());
 

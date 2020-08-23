@@ -190,8 +190,9 @@ public class MainActivity extends AppCompatActivity
         {
             currentUser = mAuth.getCurrentUser();
             currentUserID = mAuth.getCurrentUser().getUid();
+            reference.child(currentUserID).setValue(token1);
         }
-        reference.child(currentUserID).setValue(token1);
+
     }
 
 
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity
         }
         else
         {
+            SharedPreferences();
             UpdateUserStatus("online");
             VerifyUserExistence();
         }

@@ -7,16 +7,20 @@ public class Data
     private String body;
     private String title;
     private String sent;
+    private String name;
+    private String pic;
 
     public Data() {
     }
 
-    public Data(String user, int icon, String body, String title, String sent) {
+    public Data(String user, int icon, String body, String title, String sent, String name, String pic) {
         this.user = user;
         this.icon = icon;
         this.body = body;
         this.title = title;
         this.sent = sent;
+        this.name = name;
+        this.pic = pic;
     }
 
     public String getUser() {
@@ -57,5 +61,21 @@ public class Data
 
     public void setSent(String sent) {
         this.sent = sent;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 }
