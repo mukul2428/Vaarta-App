@@ -47,10 +47,10 @@ public class PhoneLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
 
-        sendVerificationCode =(Button)findViewById(R.id.send_ver_code_button);
-        VerifyButton =(Button)findViewById(R.id.verify_button);
-        InputPhoneNumber =(EditText)findViewById(R.id.phone_number_input);
-        InputVerificationCode =(EditText)findViewById(R.id.verification_code_input);
+        sendVerificationCode = findViewById(R.id.send_ver_code_button);
+        VerifyButton = findViewById(R.id.verify_button);
+        InputPhoneNumber = findViewById(R.id.phone_number_input);
+        InputVerificationCode = findViewById(R.id.verification_code_input);
 
         LoadingBar = new ProgressDialog(this);
 

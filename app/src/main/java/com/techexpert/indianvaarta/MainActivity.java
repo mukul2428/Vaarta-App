@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //check whether user's data is present on database
     private void VerifyUserExistence()
     {
 
