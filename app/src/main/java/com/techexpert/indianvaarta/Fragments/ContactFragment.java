@@ -36,6 +36,8 @@ public class ContactFragment extends Fragment
 
     private DatabaseReference ContactsRef, UsersRef;
 
+    private TextView textView;
+
     public ContactFragment()
     {
         // Required empty public constructor
@@ -50,6 +52,7 @@ public class ContactFragment extends Fragment
         // Inflate the layout for this fragment
         View contactsView = inflater.inflate(R.layout.fragment_contact, container, false);
 
+        textView = contactsView.findViewById(R.id.main_text2);
         myContactsList = contactsView.findViewById(R.id.contacts_list);
         myContactsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -88,6 +91,9 @@ public class ContactFragment extends Fragment
 
                 //retrieving all the user id of users which are saved in current user contacts
                 String UsersIds = getRef(position).getKey();
+
+                myContactsList.setVisibility(View.VISIBLE);
+                textView.setVisibility(View.INVISIBLE);
 
                 //to get all the info of user
                 UsersRef.child(UsersIds).addValueEventListener(new ValueEventListener()

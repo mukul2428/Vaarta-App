@@ -17,6 +17,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/sent_req_toolbar"
-        android:id="@+id/sent_request_list"/>
+        android:id="@+id/sent_request_list"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="\t\t\t\t\t\tNo Sent\nChat Request"
+        android:textColor="@color/colorEditText"
+        android:textSize="40dp"
+        android:fontFamily="sans-serif"
+        android:visibility="visible"
+        android:id="@+id/main_text4"/>
 
 </RelativeLayout>

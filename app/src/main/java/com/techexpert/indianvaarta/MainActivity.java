@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    private TextView textView;
 
     private BottomNavigationView bottomNav;
     private NavigationView navigationView;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
+
+        textView = findViewById(R.id.empty_view);
 
         if(mAuth.getCurrentUser()!=null)
         {
@@ -112,30 +115,27 @@ public class MainActivity extends AppCompatActivity
 
         bottomNav = findViewById(R.id.bottom_navigation_bar);
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+        navigationView.setNavigationItemSelectedListener(item ->
+        {
+            switch (item.getItemId())
             {
-                switch (item.getItemId())
-                {
 
-                    case R.id.main_profile_option:
-                        SendUserToSettingsActivity();
-                        break;
-                    case R.id.main_sent_requests_option:
-                        SendUserToSentRequestActivity();
-                        break;
-                    case R.id.Chat_Requests_option:
-                        SendUserToChatRequestActivity();
-                        break;
-                    case R.id.invite_friends_option:
-                        Toast.makeText(MainActivity.this, "Invite friend clicked", Toast.LENGTH_SHORT).show();
-                }
-
-
-                drawerLayout.closeDrawer((GravityCompat.START));
-                return true;
+                case R.id.main_profile_option:
+                    SendUserToSettingsActivity();
+                    break;
+                case R.id.main_sent_requests_option:
+                    SendUserToSentRequestActivity();
+                    break;
+                case R.id.Chat_Requests_option:
+                    SendUserToChatRequestActivity();
+                    break;
+                case R.id.invite_friends_option:
+                    Toast.makeText(MainActivity.this, "Invite friend clicked", Toast.LENGTH_SHORT).show();
             }
+
+
+            drawerLayout.closeDrawer((GravityCompat.START));
+            return true;
         });
 
 
@@ -143,36 +143,31 @@ public class MainActivity extends AppCompatActivity
                 ,new ChatFragment()).commit();
 
 
-        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
+        bottomNav.setOnNavigationItemSelectedListener(menuItem ->
         {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+
+            Fragment fragment = null;
+            switch (menuItem.getItemId())
             {
-
-                Fragment fragment = null;
-                switch (menuItem.getItemId())
-                {
-                    case R.id.chats:
-                        fragment = new ChatFragment();
-                        break;
-                    case R.id.groups:
-                        fragment = new GroupFragment();
-                        break;
-                    case R.id.contacts:
-                        fragment = new ContactFragment();
-                        break;
-                }
-
-                if (fragment != null) {
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .commit();
-                }
-
-                return true;
+                case R.id.chats:
+                    fragment = new ChatFragment();
+                    break;
+                case R.id.groups:
+                    fragment = new GroupFragment();
+                    break;
+                case R.id.contacts:
+                    fragment = new ContactFragment();
+                    break;
             }
 
+            if (fragment != null) {
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+
+            return true;
         });
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
@@ -305,8 +300,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
-
-
         if(item.getItemId()==R.id.logout)
         {
             UpdateUserStatus("offline");

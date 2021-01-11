@@ -39,6 +39,8 @@ public class SentRequestActivity extends AppCompatActivity
 
     private String currentUserID;
 
+    private TextView textView;
+
     private Toolbar SentReqToolbar;
 
 
@@ -48,6 +50,7 @@ public class SentRequestActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sent_request);
 
+        textView = findViewById(R.id.main_text4);
 
         ChatRequestRef = FirebaseDatabase.getInstance().getReference().child("Chat Request");
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -126,6 +129,10 @@ public class SentRequestActivity extends AppCompatActivity
 
                             if(type.equals("sent"))
                             {
+
+                                textView.setVisibility(View.GONE);
+                                myRequestList.setVisibility(View.VISIBLE);
+
                                 Button request_sent_btn = holder.itemView.findViewById(R.id.request_accept_btn);
                                 request_sent_btn.setText("Cancel");
 
@@ -133,26 +140,19 @@ public class SentRequestActivity extends AppCompatActivity
                                 holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.INVISIBLE);
 
                                 holder.itemView.findViewById(R.id.request_accept_btn)
-                                        .setOnClickListener(new View.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(View v)
-                                            {
-                                                ChatRequestRef.child(currentUserID).child(ListUserID)
-                                                        .removeValue()
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>()
+                                        .setOnClickListener(v -> ChatRequestRef.child(currentUserID).child(ListUserID)
+                                                .removeValue()
+                                                .addOnCompleteListener(new OnCompleteListener<Void>()
+                                                {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task)
+                                                    {
+                                                        if(task.isSuccessful())
                                                         {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task)
-                                                            {
-                                                                if(task.isSuccessful())
-                                                                {
-                                                                    CancelSentRequest(ListUserID);
-                                                                }
-                                                            }
-                                                        });
-                                            }
-                                        });
+                                                            CancelSentRequest(ListUserID);
+                                                        }
+                                                    }
+                                                }));
 
 
                                 UsersRef.child(ListUserID).addValueEventListener(new ValueEventListener()

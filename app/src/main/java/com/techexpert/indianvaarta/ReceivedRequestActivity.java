@@ -39,6 +39,8 @@ public class ReceivedRequestActivity extends AppCompatActivity
 
     private String currentUserID;
 
+    private TextView textView;
+
     private Toolbar ReqToolbar;
 
     @Override
@@ -46,6 +48,8 @@ public class ReceivedRequestActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_received_request);
+
+        textView = findViewById(R.id.main_text5);
 
         ChatRequestRef = FirebaseDatabase.getInstance().getReference().child("Chat Request");
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -129,25 +133,14 @@ public class ReceivedRequestActivity extends AppCompatActivity
                             if(type.equals("received"))
                             {
 
+                                textView.setVisibility(View.GONE);
+                                myRequestList.setVisibility(View.VISIBLE);
+
                                 holder.itemView.findViewById(R.id.request_accept_btn)
-                                        .setOnClickListener(new View.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(View v)
-                                            {
-                                                AcceptRequest(ListUserID);
-                                            }
-                                        });
+                                        .setOnClickListener(v -> AcceptRequest(ListUserID));
 
                                 holder.itemView.findViewById(R.id.request_cancel_btn)
-                                        .setOnClickListener(new View.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(View v)
-                                            {
-                                                CancelRequest(ListUserID);
-                                            }
-                                        });
+                                        .setOnClickListener(v -> CancelRequest(ListUserID));
 
 
                                 //you will get user info from Users node
@@ -169,37 +162,32 @@ public class ReceivedRequestActivity extends AppCompatActivity
                                         holder.userName.setText(requestUserName);
                                         holder.userStatus.setText("Wants to connect with you");
 
-                                        holder.itemView.setOnClickListener(new View.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(View v)
-                                            {
-                                                CharSequence options[] = new CharSequence[]
-                                                        {
-                                                                "Accept",
-                                                                "Cancel"
-                                                        };
-                                                AlertDialog.Builder builder = new AlertDialog.Builder(ReceivedRequestActivity.this);
-                                                builder.setTitle(requestUserName + " Chat Request");
-
-                                                builder.setItems(options, new DialogInterface.OnClickListener()
-                                                {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which)
+                                        holder.itemView.setOnClickListener(v -> {
+                                            CharSequence options1[] = new CharSequence[]
                                                     {
-                                                        if(which == 0) //accept button//it will save to contacts if accepted
-                                                        {
-                                                            AcceptRequest(ListUserID);
-                                                        }
-                                                        if(which == 1)
-                                                        {
-                                                            CancelRequest(ListUserID);
-                                                        }
-                                                    }
-                                                });
+                                                            "Accept",
+                                                            "Cancel"
+                                                    };
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(ReceivedRequestActivity.this);
+                                            builder.setTitle(requestUserName + " Chat Request");
 
-                                                builder.show();
-                                            }
+                                            builder.setItems(options1, new DialogInterface.OnClickListener()
+                                            {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                    if(which == 0) //accept button//it will save to contacts if accepted
+                                                    {
+                                                        AcceptRequest(ListUserID);
+                                                    }
+                                                    if(which == 1)
+                                                    {
+                                                        CancelRequest(ListUserID);
+                                                    }
+                                                }
+                                            });
+
+                                            builder.show();
                                         });
                                     }
 

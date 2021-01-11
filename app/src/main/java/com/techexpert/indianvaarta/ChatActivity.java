@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -105,8 +106,6 @@ public class ChatActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()!=null)
         {
@@ -152,57 +151,52 @@ public class ChatActivity extends AppCompatActivity
             }
         });
 
-        SendFilesButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                CharSequence[] options = new CharSequence[]
-                        {
-                                "Images",
-                                "PDF File",
-                                "MS Word File"
-                        };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-                builder.setTitle("Select File");
-                builder.setItems(options, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
+        SendFilesButton.setOnClickListener(v -> {
+            CharSequence[] options = new CharSequence[]
                     {
-                        if (i == 0)
-                        {
-                            checker = "image";
+                            "Images",
+                            "PDF File",
+                            "MS Word File"
+                    };
 
-                            Intent intent = new Intent();
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            startActivityForResult(intent.createChooser(intent, "Select Image"), 5);
-                        }
-                        if (i == 1)
-                        {
-                            checker = "pdf";
+            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+            builder.setTitle("Select File");
+            builder.setItems(options, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i)
+                {
+                    if (i == 0)
+                    {
+                        checker = "image";
 
-                            Intent intent = new Intent();
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            intent.setType("application/pdf");
-                            startActivityForResult(intent.createChooser(intent, "Select PDF File"), 5);
-
-                        }
-                        if (i == 2)
-                        {
-                            checker = "docx";
-
-                            Intent intent = new Intent();
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            intent.setType("application/msword");
-                            startActivityForResult(intent.createChooser(intent, "Select Ms Word File"), 5);
-                        }
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        intent.setType("image/*");
+                        startActivityForResult(intent.createChooser(intent, "Select Image"), 5);
                     }
-                });
-                builder.show();
-            }
+                    if (i == 1)
+                    {
+                        checker = "pdf";
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        intent.setType("application/pdf");
+                        startActivityForResult(intent.createChooser(intent, "Select PDF File"), 5);
+
+                    }
+                    if (i == 2)
+                    {
+                        checker = "docx";
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        intent.setType("application/msword");
+                        startActivityForResult(intent.createChooser(intent, "Select Ms Word File"), 5);
+                    }
+                }
+            });
+            builder.show();
         });
 
         RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
@@ -459,22 +453,12 @@ public class ChatActivity extends AppCompatActivity
 
                         }
                     }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        loadingBar.dismiss();
-                        Toast.makeText(ChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>()
-                {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot)
-                    {
-                        double p = (100.0*taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                        loadingBar.setMessage((int) p + "%  Uploading....");
-                    }
+                }).addOnFailureListener(e -> {
+                    loadingBar.dismiss();
+                    Toast.makeText(ChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }).addOnProgressListener(taskSnapshot -> {
+                    double p = (100.0*taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    loadingBar.setMessage((int) p + "%  Uploading....");
                 });
 
             }
@@ -695,8 +679,6 @@ public class ChatActivity extends AppCompatActivity
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful())
                     {
-                        Toast.makeText(ChatActivity.this, "Message Sent", Toast.LENGTH_SHORT).show();
-
                         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(messageSenderID);
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -750,8 +732,6 @@ public class ChatActivity extends AppCompatActivity
                             .enqueue(new retrofit2.Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, retrofit2.Response<MyResponse> response) {
-
-                                    Toast.makeText(ChatActivity.this, ""+response.message(), Toast.LENGTH_SHORT).show();
 
                                 }
 

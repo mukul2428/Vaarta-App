@@ -43,6 +43,8 @@ public class ChatFragment extends Fragment
     private DatabaseReference ChatsRef, UsersRef;
     private FirebaseAuth mAuth;
 
+    private TextView textView;
+
     private String currentUserID ="";
 
 
@@ -78,6 +80,8 @@ public class ChatFragment extends Fragment
         ChatsRef = FirebaseDatabase.getInstance().getReference()
                 .child("Contacts").child(currentUserID);
 
+        textView = private_chats_view.findViewById(R.id.main_text);
+
         chatList = private_chats_view.findViewById(R.id.chats_list);
         chatList.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -112,6 +116,9 @@ public class ChatFragment extends Fragment
                 //by this line we will get user id of each key line by line present in a contact node of current user
                 final String usersIds = getRef(position).getKey();
                 final String[] retImage = {"default_image"};
+
+                textView.setVisibility(View.GONE);
+                chatList.setVisibility(View.VISIBLE);
 
                 //getting the info of each user
                 UsersRef.child(usersIds).addValueEventListener(new ValueEventListener()
@@ -167,19 +174,15 @@ public class ChatFragment extends Fragment
                                 holder.user_status.setText("Offline");
                             }
 
-                            holder.itemView.setOnClickListener(new View.OnClickListener()
+                            holder.itemView.setOnClickListener(v ->
                             {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                    Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                Intent chatIntent = new Intent(getContext(), ChatActivity.class);
 
-                                    chatIntent.putExtra("visit_user_id",usersIds);
-                                    chatIntent.putExtra("visit_user_name",retName);
-                                    chatIntent.putExtra("user_image", retImage[0]);
+                                chatIntent.putExtra("visit_user_id",usersIds);
+                                chatIntent.putExtra("visit_user_name",retName);
+                                chatIntent.putExtra("user_image", retImage[0]);
 
-                                    startActivity(chatIntent);
-                                }
+                                startActivity(chatIntent);
                             });
                         }
                     }
