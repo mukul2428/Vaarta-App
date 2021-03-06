@@ -1,17 +1,23 @@
 package com.techexpert.indianvaarta;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -19,6 +25,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -312,7 +320,7 @@ public class MainActivity extends AppCompatActivity
         }
         if(item.getItemId()==R.id.main_create_group_option)
         {
-            Toast.makeText(this, "group", Toast.LENGTH_SHORT).show();
+            RequestNewGroup();
         }
         if(item.getItemId()==R.id.main_find_friends_option)
         {
@@ -399,13 +407,10 @@ public class MainActivity extends AppCompatActivity
                                 });
                     }
 
-                    retrieveImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            drawerLayout.openDrawer(GravityCompat.START);
-                            // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    retrieveImage.setOnClickListener(v -> {
+                        drawerLayout.openDrawer(GravityCompat.START);
+                        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-                        }
                     });
                 }
             }
@@ -521,6 +526,79 @@ public class MainActivity extends AppCompatActivity
             editor.putString("Current_USERID",currentUserID);
             editor.apply();
         }
+    }
+
+    private void RequestNewGroup()
+    {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Enter Group Name");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText groupNameField = new EditText(this);
+        groupNameField.setHint("eg. Friends Forever");
+        layout.addView(groupNameField);
+
+        final EditText groupStatusField = new EditText(this);
+        groupStatusField.setHint("Status");
+        layout.addView(groupStatusField);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Create", (dialog, which) -> {
+
+            String groupName = groupNameField.getText().toString();
+            String groupStatus = groupStatusField.getText().toString();
+
+            if(TextUtils.isEmpty(groupName) || TextUtils.isEmpty(groupStatus))
+            {
+                Toast.makeText(MainActivity.this, "Please write Group Name...", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                CreateNewGroup(groupName,groupStatus);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void CreateNewGroup(final String groupName,final String groupStatus)
+    {
+
+        DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
+        rootRef.child("Groups").child(groupName);
+        String key = rootRef.push().getKey();
+
+//        HashMap<String, Object> GroupInfoMap = new HashMap<>();
+//        GroupInfoMap.put("name", groupName);
+//        GroupInfoMap.put("status", groupStatus);
+
+        rootRef.child("Groups").child(key).child("name").setValue(groupName)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful())
+                    {
+                        Toast.makeText(MainActivity.this, groupName+" group is created successfully...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        rootRef.child("Groups").child(key).child("status").setValue(groupStatus)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful())
+                    {
+
+                    }
+                });
+
+        groupRef.child("Groups").child(key).setValue(groupName).addOnCompleteListener(task -> {
+
+            if(task.isSuccessful())
+            {
+
+            }
+        });
     }
 
 }

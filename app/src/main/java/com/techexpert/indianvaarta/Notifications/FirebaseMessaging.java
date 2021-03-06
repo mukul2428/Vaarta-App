@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -24,6 +25,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.techexpert.indianvaarta.ChatActivity;
 import com.techexpert.indianvaarta.MainActivity;
 import com.techexpert.indianvaarta.R;
+import com.techexpert.indianvaarta.ReceiverID;
 
 public class FirebaseMessaging extends FirebaseMessagingService
 {
@@ -50,12 +52,14 @@ public class FirebaseMessaging extends FirebaseMessagingService
             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
             SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
-            String savedCurrentUser = sp.getString("Current_USERID","NONE");
+            String savedCurrentUser = sp.getString("Current_USERID","offline");
 
             if(firebaseUser!=null && sent.equals(mAuth.getCurrentUser().getUid()))
             {
-                if(!savedCurrentUser.equals(user))
-                {
+              //  Toast.makeText(this, savedCurrentUser, Toast.LENGTH_SHORT).show();
+
+               if(ChatActivity.s().equals("offline"))
+               {
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     {
                         sendOAndAboveNotification(remoteMessage);

@@ -45,21 +45,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         RootReference= FirebaseDatabase.getInstance().getReference();
 
-        AlreadyHaveAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        AlreadyHaveAccount.setOnClickListener(v -> SendUserToLoginActivity());
 
-                SendUserToLoginActivity();
-            }
-        });
-
-        CreateAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                CreateNewAccount();
-            }
-        });
+        CreateAccountButton.setOnClickListener(v -> CreateNewAccount());
 
     }
 
@@ -111,49 +99,41 @@ public class RegisterActivity extends AppCompatActivity {
             loadingBar.show();
 
             mAuth.createUserWithEmailAndPassword(email,password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                    .addOnCompleteListener(task -> {
 
-                            if(task.isSuccessful())
-                            {
+                        if(task.isSuccessful())
+                        {
 
-                                FirebaseInstanceId.getInstance().getInstanceId()
-                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>()
+                            FirebaseInstanceId.getInstance().getInstanceId()
+                                    .addOnCompleteListener(task1 -> {
+                                        if(task1.isSuccessful())
                                         {
-                                            @Override
-                                            public void onComplete(@NonNull Task<InstanceIdResult> task)
+                                            String token = task1.getResult().getToken();
+
+                                            String currentUserID = mAuth.getCurrentUser().getUid();
+
+                                            RootReference.child("Users").child(currentUserID).setValue("");
+
+                                            RootReference.child("Users").child(currentUserID).child("device_token")
+                                                    .setValue(token);
+
+                                            SendUserToMainActivity();
+                                            Toast.makeText(RegisterActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
+                                            loadingBar.dismiss();
+                                        }
+                                        else
                                             {
-                                                if(task.isSuccessful())
-                                                {
-                                                    String token = task.getResult().getToken();
-
-                                                    String currentUserID = mAuth.getCurrentUser().getUid();
-
-                                                    RootReference.child("Users").child(currentUserID).setValue("");
-
-                                                    RootReference.child("Users").child(currentUserID).child("device_token")
-                                                            .setValue(token);
-
-                                                    SendUserToMainActivity();
-                                                    Toast.makeText(RegisterActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
-                                                    loadingBar.dismiss();
-                                                }
-                                                else
-                                                    {
-                                                        String message=task.getException().toString();
-                                                        Toast.makeText(RegisterActivity.this, "Error :"+ message, Toast.LENGTH_LONG).show();
-                                                        loadingBar.dismiss();
-                                                    }
+                                                String message= task1.getException().toString();
+                                                Toast.makeText(RegisterActivity.this, "Error :"+ message, Toast.LENGTH_LONG).show();
+                                                loadingBar.dismiss();
                                             }
-                                        });
-                            }
-                            else
-                            {
-                                String message=task.getException().toString();
-                                Toast.makeText(RegisterActivity.this, "Error :"+ message, Toast.LENGTH_LONG).show();
-                                loadingBar.dismiss();
-                            }
+                                    });
+                        }
+                        else
+                        {
+                            String message=task.getException().toString();
+                            Toast.makeText(RegisterActivity.this, "Error :"+ message, Toast.LENGTH_LONG).show();
+                            loadingBar.dismiss();
                         }
                     });
         }

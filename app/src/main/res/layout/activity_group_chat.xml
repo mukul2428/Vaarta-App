@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".GroupChatActivity"
+    android:background="@color/colorBackground">
+
+    <include
+        android:id="@+id/group_chat_bar_layout"
+        layout="@layout/app_bar_layout">
+    </include>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/Group_chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/group_chat_bar_layout"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_above="@+id/group_chat_linear_layout"
+        android:background="@color/colorBackground">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/group_chat_linear_layout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="@color/colorBackground">
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/send_group_files_btn"
+            android:src="@drawable/send_files"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/inputs2"
+            android:layout_marginStart="4dp"
+            android:backgroundTint="@color/colorEditText"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/input_group_message"
+            android:hint="Type your message..."
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorAccent"
+            android:padding="14dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="2dp"
+            android:maxLines="5"
+            android:background="@drawable/input"
+            android:backgroundTint="@color/colorChat"
+            android:layout_toStartOf="@+id/send_message_button"
+            android:layout_toEndOf="@+id/send_group_files_btn"
+            />
+
+        <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/inputs2"
+            android:id="@+id/send_message_button"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="2dp"
+            android:src="@drawable/send_message"
+            android:backgroundTint="@color/colorEditText"
+
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

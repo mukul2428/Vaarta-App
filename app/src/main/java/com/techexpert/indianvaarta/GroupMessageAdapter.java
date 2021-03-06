@@ -20,7 +20,6 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,8 +42,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>
-
+public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapter.MessageViewHolder>
 {
 
     private List<Messages> userMessagesList;
@@ -54,7 +52,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private StorageReference storageRef, storageImageRef;
 
 
-    public MessageAdapter(List<Messages> userMessagesList)
+    public GroupMessageAdapter(List<Messages> userMessagesList)
     {
         this.userMessagesList = userMessagesList;
     }
@@ -101,7 +99,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MessageViewHolder holder, final int position)
+    public void onBindViewHolder(@NonNull final GroupMessageAdapter.MessageViewHolder holder, final int position)
     {
         final String MessageSenderID = mAuth.getCurrentUser().getUid();
         final Messages messages = userMessagesList.get(position);
@@ -304,64 +302,64 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     builder.setTitle("Document Option");
 
                     builder.setItems(options, (dialog, which) -> {
-                       if(which == 0)
-                       {
+                        if(which == 0)
+                        {
 
-                           final File FileFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Documents" + File.separator+"Sent");
+                            final File FileFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Documents" + File.separator+"Sent");
 
-                           if(userMessagesList.get(position).getType().equals("docx"))
-                           {
-                               File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".docx");
+                            if(userMessagesList.get(position).getType().equals("docx"))
+                            {
+                                File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".docx");
 
-                               if(InputF.exists())
-                               {
-                                   Intent intent = new Intent();
-                                   intent.setAction(Intent.ACTION_VIEW);
-                                   //Uri uri = Uri.parse(InputF.getAbsolutePath());
-                                   Uri uri = Uri.fromFile(InputF);
-                                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                                   {
-                                       uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
-                                   }
-                                   intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                if(InputF.exists())
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(InputF);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                                   intent.setDataAndType(uri,"application/docx");
+                                    intent.setDataAndType(uri,"application/docx");
 
-                                   holder.itemView.getContext().startActivity(intent);
-                               }
-                               else
-                               {
-                                   Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
-                               }
-                           }
+                                    holder.itemView.getContext().startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
-                           else if(userMessagesList.get(position).getType().equals("pdf"))
-                           {
-                               File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".pdf");
+                            else if(userMessagesList.get(position).getType().equals("pdf"))
+                            {
+                                File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".pdf");
 
-                               if(InputF.exists())
-                               {
-                                   Intent intent = new Intent();
-                                   intent.setAction(Intent.ACTION_VIEW);
-                                   //Uri uri = Uri.parse(InputF.getAbsolutePath());
-                                   Uri uri = Uri.fromFile(InputF);
-                                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                                   {
-                                       uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
-                                   }
-                                   intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                if(InputF.exists())
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(InputF);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                                   intent.setDataAndType(uri,"application/pdf");
+                                    intent.setDataAndType(uri,"application/pdf");
 
-                                   holder.itemView.getContext().startActivity(intent);
-                               }
-                               else
-                               {
-                                   Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
-                               }
-                           }
-                       }
-                       else if(which == 1)
+                                    holder.itemView.getContext().startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        else if(which == 1)
                         {
                             DeleteSentMessages(position, holder);
 
@@ -369,13 +367,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             holder.itemView.getContext().startActivity(intent);
                         }
 
-                       else if(which == 2)
-                       {
-                           DeleteMessageForEveryone(position, holder);
+                        else if(which == 2)
+                        {
+                            DeleteMessageForEveryone(position, holder);
 
-                           Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
-                           holder.itemView.getContext().startActivity(intent);
-                       }
+                            Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
+                            holder.itemView.getContext().startActivity(intent);
+                        }
                     });
                     builder.show();
                 }
@@ -391,27 +389,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
                     builder.setTitle("Delete Message ?");
 
-                    builder.setItems(options, new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
+                    builder.setItems(options, (dialog, which) -> {
+                        if(which == 0)
                         {
-                            if(which == 0)
-                            {
-                                DeleteSentMessages(position, holder);
+                            DeleteSentMessages(position, holder);
 
-                                Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
-                                holder.itemView.getContext().startActivity(intent);
-                            }
-                            else if(which == 1)
-                            {
-                                DeleteMessageForEveryone(position, holder);
-
-                                Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
-                                holder.itemView.getContext().startActivity(intent);
-                            }
-
+                            Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
+                            holder.itemView.getContext().startActivity(intent);
                         }
+                        else if(which == 1)
+                        {
+                            DeleteMessageForEveryone(position, holder);
+
+                            Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
+                            holder.itemView.getContext().startActivity(intent);
+                        }
+
                     });
                     builder.show();
                 }
@@ -429,48 +422,53 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
                     builder.setTitle("Image Option");
 
-                    builder.setItems(options, (dialog, which) -> {
-                        if(which == 0)
+                    builder.setItems(options, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
                         {
-
-                            final File ImageFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Images" + File.separator+"Sent");
-
-                            //opening the file which you have sent
-
-                            File InputF = new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
-
-
-                            if(InputF.exists())
+                            if(which == 0)
                             {
-                                Intent intent = new Intent();
-                                intent.setAction(Intent.ACTION_VIEW);
-                                //Uri uri = Uri.parse(InputF.getAbsolutePath());
-                                Uri uri = Uri.fromFile(InputF);
-                                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+
+                                final File ImageFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Images" + File.separator+"Sent");
+
+                                //opening the file which you have sent
+
+                                File InputF = new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
+
+
+                                if(InputF.exists())
                                 {
-                                    uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(InputF);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            .setDataAndType(uri,"image/*");
+                                    holder.itemView.getContext().startActivity(intent);
                                 }
-                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                        .setDataAndType(uri,"image/*");
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                            else if(which == 1)
+                            {
+                                DeleteSentMessages(position, holder);
+                                holder.messageSenderPicture.setVisibility(View.GONE);
+                            }
+                            else if(which == 2)
+                            {
+                                DeleteMessageForEveryone(position, holder);
+
+                                Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
                                 holder.itemView.getContext().startActivity(intent);
                             }
-                            else
-                            {
-                                Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                        else if(which == 1)
-                        {
-                            DeleteSentMessages(position, holder);
-                            holder.messageSenderPicture.setVisibility(View.GONE);
-                        }
-                        else if(which == 2)
-                        {
-                            DeleteMessageForEveryone(position, holder);
-
-                            Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
-                            holder.itemView.getContext().startActivity(intent);
                         }
                     });
                     builder.show();
@@ -504,7 +502,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.mediaStatus.setVisibility(View.VISIBLE);
                 holder.mediaStatus.setText("Not Downloaded");
             }
-            
+
 
             holder.itemView.setOnClickListener(v -> {
 
@@ -702,31 +700,36 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         if(which == 0)
                         {
 
-                         boolean success = true;
-                         if(!ImageFolder.exists())
-                         {
-                             success = ImageFolder.mkdirs();
-                         }
-                         if(success)
-                         {
-                             final File outputFile =new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
+                            boolean success = true;
+                            if(!ImageFolder.exists())
+                            {
+                                success = ImageFolder.mkdirs();
+                            }
+                            if(success)
+                            {
+                                final File outputFile =new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
 
 
-                             storageImageRef.child(userMessagesList.get(position).getMessageID()+".jpg").getFile(outputFile)
-                                     .addOnSuccessListener(taskSnapshot -> {
-                                         //holder.messageReceiverPicture.setImageURI(Uri.fromFile(outputFile));
+                                storageImageRef.child(userMessagesList.get(position).getMessageID()+".jpg").getFile(outputFile)
+                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
+                                        {
+                                            @Override
+                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                            {
+                                                //holder.messageReceiverPicture.setImageURI(Uri.fromFile(outputFile));
 
-                                         holder.mediaStatus.setVisibility(View.VISIBLE);
-                                         holder.mediaStatus.setText("Downloaded");
+                                                holder.mediaStatus.setVisibility(View.VISIBLE);
+                                                holder.mediaStatus.setText("Downloaded");
 
-                                         Toast.makeText(holder.itemView.getContext(), "Image downloaded", Toast.LENGTH_SHORT).show();
-                                     })
-                                     .addOnFailureListener(e -> Toast.makeText(holder.itemView.getContext(), "Failed", Toast.LENGTH_SHORT).show());
-                         }
-                         else
-                             {
-                                 Toast.makeText(holder.itemView.getContext(), "Please grant permission for storage...", Toast.LENGTH_SHORT).show();
-                             }
+                                                Toast.makeText(holder.itemView.getContext(), "Image downloaded", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> Toast.makeText(holder.itemView.getContext(), "Failed", Toast.LENGTH_SHORT).show());
+                            }
+                            else
+                            {
+                                Toast.makeText(holder.itemView.getContext(), "Please grant permission for storage...", Toast.LENGTH_SHORT).show();
+                            }
 
                         }
 
@@ -775,7 +778,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     }
 
-    private void Day(int position, Messages messages, MessageViewHolder holder)
+    private void Day(int position, Messages messages, GroupMessageAdapter.MessageViewHolder holder)
     {
 
         Calendar calendar = Calendar.getInstance();
@@ -830,9 +833,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return userMessagesList.size();
     }
 
-    
 
-    private void DeleteSentMessages(final int position, final MessageViewHolder holder)
+
+    private void DeleteSentMessages(final int position, final GroupMessageAdapter.MessageViewHolder holder)
     {
 
         DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
@@ -841,18 +844,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 .child(userMessagesList.get(position).getTo()) //getting receiver id
                 .child(userMessagesList.get(position).getMessageID()) //getting unique message id
                 .removeValue().addOnCompleteListener(task -> {
-                    if(task.isSuccessful())
-                    {
-                        Toast.makeText(holder.itemView.getContext(), "Deleted successfully...", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
-                        Toast.makeText(holder.itemView.getContext(), "Error Occurred...", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            if(task.isSuccessful())
+            {
+                Toast.makeText(holder.itemView.getContext(), "Deleted successfully...", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(holder.itemView.getContext(), "Error Occurred...", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void DeleteReceiveMessages(final int position, final MessageViewHolder holder)
+    private void DeleteReceiveMessages(final int position, final GroupMessageAdapter.MessageViewHolder holder)
     {
 
         DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
@@ -872,7 +875,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 });
     }
 
-    private void DeleteMessageForEveryone(final int position, final MessageViewHolder holder)
+    private void DeleteMessageForEveryone(final int position, final GroupMessageAdapter.MessageViewHolder holder)
     {
 
         final DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
@@ -880,27 +883,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 .child(userMessagesList.get(position).getFrom()) //getting sender id
                 .child(userMessagesList.get(position).getTo()) //getting receiver id
                 .child(userMessagesList.get(position).getMessageID()) //getting unique message id
-                .removeValue().addOnCompleteListener(task -> {
-                    if(task.isSuccessful())
-                    {
-                        rootReference.child("Messages")
-                                .child(userMessagesList.get(position).getTo()) //getting sender id
-                                .child(userMessagesList.get(position).getFrom()) //getting receiver id
-                                .child(userMessagesList.get(position).getMessageID()) //getting unique message id
-                                .removeValue().addOnCompleteListener(task1 -> {
-                                    if(task1.isSuccessful())
-                                    {
-                                        Toast.makeText(holder.itemView.getContext(), "Deleted successfully...", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                .removeValue().addOnCompleteListener(new OnCompleteListener<Void>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<Void> task)
+            {
+                if(task.isSuccessful())
+                {
+                    rootReference.child("Messages")
+                            .child(userMessagesList.get(position).getTo()) //getting sender id
+                            .child(userMessagesList.get(position).getFrom()) //getting receiver id
+                            .child(userMessagesList.get(position).getMessageID()) //getting unique message id
+                            .removeValue().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful())
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "Deleted successfully...", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
-                    }
-                    else
-                    {
-                        Toast.makeText(holder.itemView.getContext(), "Error Occurred...", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                }
+                else
+                {
+                    Toast.makeText(holder.itemView.getContext(), "Error Occurred...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }
-
