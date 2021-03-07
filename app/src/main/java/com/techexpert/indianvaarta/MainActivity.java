@@ -571,20 +571,31 @@ public class MainActivity extends AppCompatActivity
 
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
         rootRef.child("Groups").child(groupName);
+        rootRef.child("Group").child(groupName);
         String key = rootRef.push().getKey();
 
 //        HashMap<String, Object> GroupInfoMap = new HashMap<>();
 //        GroupInfoMap.put("name", groupName);
 //        GroupInfoMap.put("status", groupStatus);
 
-        rootRef.child("Groups").child(key).child("name").setValue(groupName)
-                .addOnCompleteListener(task -> {
+        rootRef.child("Groups").child(key).setValue("")
+                .addOnCompleteListener(task ->
+                {
                     if(task.isSuccessful())
                     {
                         Toast.makeText(MainActivity.this, groupName+" group is created successfully...", Toast.LENGTH_SHORT).show();
                     }
                 });
-        rootRef.child("Groups").child(key).child("status").setValue(groupStatus)
+
+        rootRef.child("Group").child(key).child("name").setValue(groupName)
+                .addOnCompleteListener(task ->
+                {
+                    if(task.isSuccessful())
+                    {
+                        Toast.makeText(MainActivity.this, groupName+" group is created successfully...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        rootRef.child("Group").child(key).child("status").setValue(groupStatus)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful())
                     {
@@ -592,7 +603,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-        groupRef.child("Groups").child(key).setValue(groupName).addOnCompleteListener(task -> {
+        groupRef.child("Group").child(key).setValue(groupName).addOnCompleteListener(task -> {
 
             if(task.isSuccessful())
             {

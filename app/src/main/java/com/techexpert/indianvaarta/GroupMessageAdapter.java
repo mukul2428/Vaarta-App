@@ -164,7 +164,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
                 holder.cardView1.setVisibility(View.GONE);
                 holder.cardView2.setVisibility(View.VISIBLE);
 
-                Day(position,messages,holder);
+                //Day(position,messages,holder);
 
                 holder.receiverDateTime.setVisibility(View.INVISIBLE);
                 holder.senderDateTime.setVisibility(View.VISIBLE);
@@ -182,7 +182,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
                 holder.receiverMessageText.setTextColor(Color.BLACK);
                 holder.receiverMessageText.setText(messages.getMessage());
 
-                Day(position,messages,holder);
+                //Day(position,messages,holder);
 
                 holder.senderDateTime.setVisibility(View.INVISIBLE);
                 holder.receiverDateTime.setVisibility(View.VISIBLE);
@@ -192,7 +192,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         }
         else if(fromMessageType.equals("image"))
         {
-            Day(position,messages,holder);
+            //Day(position,messages,holder);
             if(fromUserId.equals(MessageSenderID))
             {
                 holder.messageSenderPicture.setVisibility(View.VISIBLE);
@@ -238,7 +238,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         }
         else if(fromMessageType.equals("pdf"))
         {
-            Day(position,messages,holder);
+            //Day(position,messages,holder);
             if(fromUserId.equals(MessageSenderID))
             {
                 holder.messageSenderPicture.setVisibility(View.VISIBLE);

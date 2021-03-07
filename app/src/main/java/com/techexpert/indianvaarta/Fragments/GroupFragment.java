@@ -64,7 +64,7 @@ public class GroupFragment extends Fragment
     {
         GroupFragmentView=inflater.inflate(R.layout.fragment_group, container, false);
 
-        GroupRef= FirebaseDatabase.getInstance().getReference().child("Groups");
+        GroupRef= FirebaseDatabase.getInstance().getReference().child("Group");
 
         textView = GroupFragmentView.findViewById(R.id.main_text3);
 
@@ -99,8 +99,10 @@ public class GroupFragment extends Fragment
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                     {
-                        if(dataSnapshot.exists()) {
-                            if (dataSnapshot.hasChild("image")) {
+                        if(dataSnapshot.exists())
+                        {
+                            if (dataSnapshot.hasChild("image"))
+                            {
                                 retImage[0] = dataSnapshot.child("image").getValue().toString();
 
                                 Picasso.get().load(retImage[0])
@@ -132,7 +134,7 @@ public class GroupFragment extends Fragment
                                     chatIntent.putExtra("visit_group_id",usersIds);
                                     chatIntent.putExtra("visit_group_name",retName);
                                     chatIntent.putExtra("group_image", retImage[0]);
-                                    chatIntent.putExtra("group_desc",retStatus);
+                                    chatIntent.putExtra("group_desc", retStatus);
 
                                     startActivity(chatIntent);
                                 });
