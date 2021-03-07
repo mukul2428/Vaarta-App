@@ -73,7 +73,7 @@ public class GroupChatActivity extends AppCompatActivity {
     StorageTask uploadTask;
 
     final List<Messages> messagesList = new ArrayList<>();
-    GroupMessageAdapter messageAdapter;
+    MessageAdapter messageAdapter;
     RecyclerView userMessagesList;
     LinearLayoutManager linearLayoutManager;
 
@@ -437,48 +437,6 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//
-//        GroupNameRef.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//                if(dataSnapshot.exists())
-//                {
-//                    DisplayMessages(dataSnapshot);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//                if(dataSnapshot.exists())
-//                {
-//                    DisplayMessages(dataSnapshot);
-//                }
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-
 
     private void InitialiseFields()
     {
@@ -503,19 +461,19 @@ public class GroupChatActivity extends AppCompatActivity {
         SendGroupFilesBtn = findViewById(R.id.send_group_files_btn);
         UserMessageInput=findViewById(R.id.input_group_message);
 
-        messageAdapter = new GroupMessageAdapter(messagesList);
+        messageAdapter = new MessageAdapter(messagesList);
         userMessagesList = findViewById(R.id.Group_chat_list);
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
 
-        Calendar calDate = Calendar.getInstance();
-        SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
-        currentDate = currentDateFormat.format(calDate.getTime());
+        Calendar calendar = Calendar.getInstance();
 
-        Calendar calTime = Calendar.getInstance();
-        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
-        currentTime = currentTimeFormat.format(calTime.getTime());
+        SimpleDateFormat CurrentDate = new SimpleDateFormat("dd-MMM-yyyy");
+        currentDate = CurrentDate.format(calendar.getTime());
+
+        SimpleDateFormat CurrentTime = new SimpleDateFormat("hh:mm a");
+        currentTime = CurrentTime.format(calendar.getTime());
 
     }
 
@@ -552,10 +510,6 @@ public class GroupChatActivity extends AppCompatActivity {
         }
         else
         {
-//
-//            HashMap<String, Object> groupMessageKey = new HashMap<>();
-//            GroupNameRef.updateChildren(groupMessageKey);
-
             GroupMessageKeyRef = GroupNameRef.child(messageKey);
             //using GroupMessageKeyRef we will store our message to database
 
@@ -574,20 +528,4 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
-//    private void DisplayMessages(DataSnapshot dataSnapshot)
-//    {
-//
-//        Iterator iterator = dataSnapshot.getChildren().iterator();
-//
-//        while(iterator.hasNext())
-//        {
-//
-//            String chatDate = (String) ((DataSnapshot)iterator.next()).getValue();
-//            String chatMessage = (String) ((DataSnapshot)iterator.next()).getValue();
-//            String chatName = (String) ((DataSnapshot)iterator.next()).getValue();
-//            String chatTime = (String) ((DataSnapshot)iterator.next()).getValue();
-//
-//            DisplayTextMessages.append(chatName + " :\n" + chatMessage + "\n" + chatTime + "    " + chatDate + "\n\n\n");
-//        }
-//    }
 }
