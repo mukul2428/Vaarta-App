@@ -69,7 +69,7 @@ public class ChatActivity extends AppCompatActivity
     TextView userName, userLastSeen;
     CircleImageView userImage;
 
-    static String s;
+    //static String s;
 
     Toolbar chatToolbar;
 
@@ -249,7 +249,7 @@ public class ChatActivity extends AppCompatActivity
     private void InitializeControllers()
     {
 
-        chatToolbar = (Toolbar) findViewById(R.id.chat_toolbar);
+        chatToolbar = findViewById(R.id.chat_toolbar);
         setSupportActionBar(chatToolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -688,12 +688,28 @@ public class ChatActivity extends AppCompatActivity
 
                     state.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            if(snapshot.hasChild("state"))
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            String s = snapshot.child("state").getValue().toString();
+                            //String time = snapshot.child("time").getValue().toString();
+                            if(s.equals("offline"))
                             {
-                                s = snapshot.child("state").getValue().toString();
+                                apiService.sendNotification(sender)
+                                        .enqueue(new retrofit2.Callback<MyResponse>() {
+                                            @Override
+                                            public void onResponse(Call<MyResponse> call, retrofit2.Response<MyResponse> response) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<MyResponse> call, Throwable t) {
+
+
+                                            }
+                                        });
                             }
+                            else
+                                notify = false;
                         }
 
                         @Override
@@ -702,21 +718,6 @@ public class ChatActivity extends AppCompatActivity
                         }
                     });
 
-
-                    apiService.sendNotification(sender)
-                            .enqueue(new retrofit2.Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, retrofit2.Response<MyResponse> response) {
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
-
-
-
-                                }
-                            });
                 }
             }
 
@@ -726,10 +727,10 @@ public class ChatActivity extends AppCompatActivity
             }
         });
     }
-
-    public static String s() {
-        String st = s;
-        return st;
-    }
+//
+//    public static String s() {
+//        String st = s;
+//        return st;
+//    }
 
 }

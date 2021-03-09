@@ -7,12 +7,9 @@
     tools:context=".SettingsActivity"
     android:background="@color/colorBackground">
 
-
     <include
         layout="@layout/app_bar_layout"
-        android:id="@+id/login_settings_toolbar"
-        >
-
+        android:id="@+id/login_settings_toolbar">
     </include>
 
     <ScrollView
@@ -27,8 +24,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/set_login_profile_image"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
@@ -42,15 +39,16 @@
                 android:id="@+id/set_login_user_name"
                 android:layout_below="@+id/set_login_profile_image"
                 android:inputType="textImeMultiLine"
-                android:hint="Username"
+                android:hint="UserName"
                 android:textAlignment="center"
-                android:textColorHint="@color/colorAccent"
+                android:textColorHint="#A6C1C1"
                 android:drawableStart="@drawable/edit_profile"
                 android:textColor="@color/colorAccent"
                 android:background="@drawable/inputs2"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp"
                 android:padding="6dp"
+                android:paddingStart="14dp"
                 android:layout_marginTop="30dp"
                 />
 
@@ -62,7 +60,8 @@
                 android:inputType="textImeMultiLine"
                 android:hint="Status"
                 android:textAlignment="center"
-                android:textColorHint="@color/colorAccent"
+                android:textColorHint="#A6C1C1"
+                android:paddingStart="14dp"
                 android:drawableStart="@drawable/edit_status"
                 android:textColor="@color/colorAccent"
                 android:background="@drawable/inputs2"

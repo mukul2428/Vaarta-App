@@ -2,15 +2,16 @@ package com.techexpert.indianvaarta;
 
 public class Messages
 {
-    private String from, message, type, to, messageID, time, date, name;
+    private String from, message, type, to, messageID, time, date, name, group_id;
 
     public Messages()
     {
 
     }
 
-    public Messages(String from, String message, String type, String to, String messageID, String time, String date, String name)
+    public Messages(String from, String message, String type, String to, String messageID, String time, String date, String name, String group_id)
     {
+        this.group_id = group_id;
         this.from = from;
         this.message = message;
         this.type = type;
@@ -19,6 +20,14 @@ public class Messages
         this.time = time;
         this.date = date;
         this.name = name;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
     }
 
     public String getFrom() {

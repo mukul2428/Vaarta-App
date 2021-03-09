@@ -51,15 +51,12 @@ public class FirebaseMessaging extends FirebaseMessagingService
 
             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-            SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
-            String savedCurrentUser = sp.getString("Current_USERID","offline");
-
             if(firebaseUser!=null && sent.equals(mAuth.getCurrentUser().getUid()))
             {
               //  Toast.makeText(this, savedCurrentUser, Toast.LENGTH_SHORT).show();
 
-               if(ChatActivity.s().equals("offline"))
-               {
+//               if(ChatActivity.s().equals("offline"))
+//               {
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     {
                         sendOAndAboveNotification(remoteMessage);
@@ -68,7 +65,7 @@ public class FirebaseMessaging extends FirebaseMessagingService
                     {
                         sendNormalNotification(remoteMessage);
                     }
-                }
+//                }
             }
         }
     }

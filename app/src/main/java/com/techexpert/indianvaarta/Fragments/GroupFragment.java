@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +52,8 @@ public class GroupFragment extends Fragment
 
     TextView textView;
 
+    FirebaseAuth mAuth;
+
     private DatabaseReference GroupRef;
 
     public GroupFragment() {
@@ -64,7 +67,8 @@ public class GroupFragment extends Fragment
     {
         GroupFragmentView=inflater.inflate(R.layout.fragment_group, container, false);
 
-        GroupRef= FirebaseDatabase.getInstance().getReference().child("Group");
+        mAuth = FirebaseAuth.getInstance();
+        GroupRef= FirebaseDatabase.getInstance().getReference().child("Group").child(mAuth.getCurrentUser().getUid());
 
         textView = GroupFragmentView.findViewById(R.id.main_text3);
 

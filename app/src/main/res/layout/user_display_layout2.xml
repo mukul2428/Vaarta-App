@@ -2,14 +2,15 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/rl">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:id="@+id/linear_layout"
-        android:orientation="horizontal">
+        android:id="@+id/relative_layout"
+        >
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="60dp"
@@ -17,42 +18,47 @@
             android:id="@+id/users_profile_image2"
             android:src="@drawable/profile_image" />
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="250sp"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_profile_name2"
-                android:layout_marginTop="8dp"
-                android:textSize="17sp"
-                android:layout_marginStart="10dp"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccent"/>
+            android:id="@+id/user_profile_name2"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/users_profile_image2"
+            android:textSize="17sp"
+            android:layout_marginStart="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"/>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_status2"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_status2"
+            android:layout_below="@id/user_profile_name2"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/users_profile_image2"
+            android:textSize="14sp"
+            android:textColor="@color/colorAccent"/>
 
-                android:textAlignment="textStart"
-                android:layout_marginStart="10dp"
-                android:textSize="14sp"
-                android:textColor="@color/colorAccent"/>
-
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/elem_select"
+            android:layout_marginTop="6dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:text=""/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_online_status"
             android:layout_width="12dp"
             android:layout_height="14dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="18dp"
             android:src="@drawable/online"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

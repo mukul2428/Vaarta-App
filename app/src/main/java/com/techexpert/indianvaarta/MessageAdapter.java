@@ -66,7 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         TextView senderMessageText, receiverMessageText, senderDateTime, receiverDateTime, mediaStatus, Date;
         CircleImageView receiverProfileImage;
         ImageView messageSenderPicture, messageReceiverPicture;
-        CardView cardView1,cardView2;
+        CardView cardView1,cardView2, msg;
 
         public MessageViewHolder(@NonNull View itemView)
         {
@@ -83,6 +83,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             mediaStatus = itemView.findViewById(R.id.media_status);
             cardView1 = itemView.findViewById(R.id.card1);
             cardView2 = itemView.findViewById(R.id.card2);
+            msg = itemView.findViewById(R.id.msg);
 
         }
     }
@@ -151,6 +152,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.mediaStatus.setVisibility(View.GONE);
         holder.cardView1.setVisibility(View.GONE);
         holder.cardView2.setVisibility(View.GONE);
+        if (position==0)
+            holder.msg.setVisibility(View.VISIBLE);
+        else
+            holder.msg.setVisibility(View.GONE);
 
 
         if(fromMessageType.equals("text"))
@@ -291,7 +296,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         {
             holder.itemView.setOnClickListener(v -> {
 
-                if(userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx"))
+                if((userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx"))
+                        && !userMessagesList.get(position).getTo().equals(""))
                 {
                     CharSequence options[] = new CharSequence[]
                             {
@@ -374,7 +380,87 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     builder.show();
                 }
 
-                else if(userMessagesList.get(position).getType().equals("text"))
+                else if((userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx"))
+                        && userMessagesList.get(position).getTo().equals(""))
+                {
+                    CharSequence options[] = new CharSequence[]
+                            {
+                                    "View File",
+                                    "Delete for Everyone",
+                                    "Cancel"
+                            };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                    builder.setTitle("Document Option");
+
+                    builder.setItems(options, (dialog, which) ->
+                    {
+                        if(which == 0)
+                        {
+
+                            final File FileFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Documents" + File.separator+"Sent");
+
+                            if(userMessagesList.get(position).getType().equals("docx"))
+                            {
+                                File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".docx");
+
+                                if(InputF.exists())
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(InputF);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                                    intent.setDataAndType(uri,"application/docx");
+
+                                    holder.itemView.getContext().startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            else if(userMessagesList.get(position).getType().equals("pdf"))
+                            {
+                                File InputF = new File(FileFolder,userMessagesList.get(position).getMessageID()+".pdf");
+
+                                if(InputF.exists())
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(InputF);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                                    intent.setDataAndType(uri,"application/pdf");
+
+                                    holder.itemView.getContext().startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        else if(which == 1)
+                        {
+                            DeleteForGroup(position, holder);
+                        }
+                    });
+                    builder.show();
+                }
+
+                else if((userMessagesList.get(position).getType().equals("text"))
+                    && !userMessagesList.get(position).getTo().equals(""))
                 {
                     CharSequence options[] = new CharSequence[]
                             {
@@ -399,8 +485,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     builder.show();
                 }
 
+                else if((userMessagesList.get(position).getType().equals("text"))
+                        && userMessagesList.get(position).getTo().equals(""))
+                {
+                    CharSequence options[] = new CharSequence[]
+                            {
+                                    "Delete for Everyone",
+                                    "Cancel"
+                            };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                    builder.setTitle("Delete Message ?");
 
-                else if(userMessagesList.get(position).getType().equals("image"))
+                    builder.setItems(options, (dialog, which) -> {
+
+                        if(which == 0)
+                        {
+                            DeleteForGroup(position, holder);
+                        }
+
+                    });
+                    builder.show();
+                }
+
+
+                else if((userMessagesList.get(position).getType().equals("image"))
+                        && !userMessagesList.get(position).getTo().equals(""))
                 {
                     CharSequence options[] = new CharSequence[]
                             {
@@ -455,6 +564,58 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     builder.show();
                 }
 
+                else if((userMessagesList.get(position).getType().equals("image"))
+                        && userMessagesList.get(position).getTo().equals(""))
+                {
+                    CharSequence options[] = new CharSequence[]
+                            {
+                                    "View Image",
+                                    "Delete for Everyone",
+                                    "Cancel",
+                            };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                    builder.setTitle("Image Option");
+
+                    builder.setItems(options, (dialog, which) ->
+                    {
+                        if(which == 0)
+                        {
+
+                            final File ImageFolder =new File(Environment.getExternalStorageDirectory()+ File.separator+"Vaarta"+ File.separator+"Vaarta Images" + File.separator+"Sent");
+
+                            //opening the file which you have sent
+
+                            File InputF = new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
+
+
+                            if(InputF.exists())
+                            {
+                                Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_VIEW);
+                                //Uri uri = Uri.parse(InputF.getAbsolutePath());
+                                Uri uri = Uri.fromFile(InputF);
+                                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                {
+                                    uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",InputF);
+                                }
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                        .setDataAndType(uri,"image/*");
+                                holder.itemView.getContext().startActivity(intent);
+                            }
+                            else
+                            {
+                                Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                        else if(which == 1)
+                        {
+                            DeleteForGroup(position, holder);
+                        }
+                    });
+                    builder.show();
+                }
+
             });
         }
 
@@ -487,7 +648,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             holder.itemView.setOnClickListener(v -> {
 
-                if(userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx"))
+                if((userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx"))
+                        && !userMessagesList.get(position).getTo().equals(""))
                 {
                     CharSequence options[] = new CharSequence[]
                             {
@@ -635,7 +797,152 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     builder.show();
                 }
 
-                else if(userMessagesList.get(position).getType().equals("text"))
+                else if((userMessagesList.get(position).getType().equals("pdf") || userMessagesList.get(position).getType().equals("docx"))
+                        && userMessagesList.get(position).getTo().equals(""))
+                {
+                    CharSequence options[] = new CharSequence[]
+                            {
+                                    "Download File",
+                                    "View File",
+                                    "Cancel"
+                            };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                    builder.setTitle("Document Option ?");
+
+                    builder.setItems(options, (dialog, which) ->
+                    {
+                        if(which == 0)
+                        {
+
+                            boolean success = true;
+                            if(!FileFolder.exists())
+                            {
+                                success = FileFolder.mkdirs();
+                            }
+                            if(success)
+                            {
+                                if(userMessagesList.get(position).getType().equals("pdf"))
+                                {
+                                    final File outputFile =new File(Environment.getExternalStorageDirectory(),"Vaarta/Vaarta Documents/"+userMessagesList.get(position).getMessageID()+".pdf");
+
+                                    long ONE_MEGABYTE = 1024*1024*1024;
+
+
+                                    storageRef.child(userMessagesList.get(position).getMessageID()+".pdf").getBytes(ONE_MEGABYTE)
+                                            .addOnSuccessListener(bytes -> {
+
+                                                holder.mediaStatus.setVisibility(View.VISIBLE);
+                                                holder.mediaStatus.setText("Downloaded");
+
+                                                Toast.makeText(holder.itemView.getContext(), "File Downloaded", Toast.LENGTH_SHORT).show();
+
+                                                try
+                                                {
+                                                    FileOutputStream fos = new FileOutputStream(outputFile);
+                                                    fos.write(bytes);
+                                                    fos.close();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    e.printStackTrace();
+                                                }
+                                            })
+                                            .addOnFailureListener(e -> Toast.makeText(holder.itemView.getContext(), "Failed", Toast.LENGTH_SHORT).show());
+                                }
+                                else if(userMessagesList.get(position).getType().equals("docx"))
+                                {
+
+                                    final File outputFile =new File(Environment.getExternalStorageDirectory(),"Vaarta/Vaarta Documents/"+userMessagesList.get(position).getName()+".docx");
+
+                                    long ONE_MEGABYTE = 1024*1024*1024;
+
+                                    storageRef.child(userMessagesList.get(position).getMessageID()+".docx").getBytes(ONE_MEGABYTE)
+                                            .addOnSuccessListener(bytes -> {
+                                                holder.mediaStatus.setVisibility(View.VISIBLE);
+                                                holder.mediaStatus.setText("Downloaded");
+
+                                                Toast.makeText(holder.itemView.getContext(), "File Downloaded", Toast.LENGTH_SHORT).show();
+
+                                                try
+                                                {
+                                                    FileOutputStream fos = new FileOutputStream(outputFile);
+                                                    fos.write(bytes);
+                                                    fos.close();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    e.printStackTrace();
+                                                }
+                                            })
+                                            .addOnFailureListener(e -> Toast.makeText(holder.itemView.getContext(), "Failed", Toast.LENGTH_SHORT).show());
+                                }
+                            }
+
+                            else
+                            {
+                                Toast.makeText(holder.itemView.getContext(), "Please grant permission for storage...", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                        else if(which == 1)
+                        {
+                            if(userMessagesList.get(position).getType().equals("pdf"))
+                            {
+                                File outputFile =new File(FileFolder,userMessagesList.get(position).getMessageID()+".pdf");
+
+                                if(outputFile.exists())
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(outputFile.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(outputFile);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",outputFile);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            .setDataAndType(uri,"application/pdf");
+                                    holder.itemView.getContext().startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else if(userMessagesList.get(position).getType().equals("docx"))
+                            {
+                                File outputFile =new File(FileFolder,userMessagesList.get(position).getMessageID()+".docx");
+
+                                if(outputFile.exists())
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    //Uri uri = Uri.parse(outputFile.getAbsolutePath());
+                                    Uri uri = Uri.fromFile(outputFile);
+                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                    {
+                                        uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",outputFile);
+                                    }
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            .setDataAndType(uri,"application/docx");
+                                    holder.itemView.getContext().startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+
+                        }
+                    });
+                    builder.show();
+                }
+
+
+                else if((userMessagesList.get(position).getType().equals("text"))
+                        && !userMessagesList.get(position).getTo().equals(""))
                 {
                     CharSequence options[] = new CharSequence[]
                             {
@@ -657,7 +964,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 }
 
 
-                else if(userMessagesList.get(position).getType().equals("image"))
+                else if((userMessagesList.get(position).getType().equals("image"))
+                        && !userMessagesList.get(position).getTo().equals(""))
                 {
                     CharSequence options[] = new CharSequence[]
                             {
@@ -738,11 +1046,105 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     builder.show();
                 }
 
+                else if((userMessagesList.get(position).getType().equals("image"))
+                        && userMessagesList.get(position).getTo().equals(""))
+                {
+                    CharSequence options[] = new CharSequence[]
+                            {
+                                    "Download Image",
+                                    "View Image",
+                                    "Cancel"
+                            };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                    builder.setTitle("Delete Message ?");
+
+                    builder.setItems(options, (dialog, which) ->
+                    {
+
+                        if(which == 0)
+                        {
+
+                            boolean success = true;
+                            if(!ImageFolder.exists())
+                            {
+                                success = ImageFolder.mkdirs();
+                            }
+                            if(success)
+                            {
+                                final File outputFile =new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
+
+
+                                storageImageRef.child(userMessagesList.get(position).getMessageID()+".jpg").getFile(outputFile)
+                                        .addOnSuccessListener(taskSnapshot -> {
+                                            //holder.messageReceiverPicture.setImageURI(Uri.fromFile(outputFile));
+
+                                            holder.mediaStatus.setVisibility(View.VISIBLE);
+                                            holder.mediaStatus.setText("Downloaded");
+
+                                            Toast.makeText(holder.itemView.getContext(), "Image downloaded", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> Toast.makeText(holder.itemView.getContext(), "Failed", Toast.LENGTH_SHORT).show());
+                            }
+                            else
+                            {
+                                Toast.makeText(holder.itemView.getContext(), "Please grant permission for storage...", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+
+                        else if(which == 1)
+                        {
+
+                            File outputFile =new File(ImageFolder,userMessagesList.get(position).getMessageID()+".jpg");
+
+                            if(outputFile.exists())
+                            {
+                                Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_VIEW);
+                                //Uri uri = Uri.parse(outputFile.getAbsolutePath());
+                                Uri uri = Uri.fromFile(outputFile);
+                                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                                {
+                                    uri = FileProvider.getUriForFile(holder.itemView.getContext(),BuildConfig.APPLICATION_ID+".provider",outputFile);
+                                }
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                        .setDataAndType(uri,"image/*");
+                                holder.itemView.getContext().startActivity(intent);
+                            }
+
+                            else
+                            {
+                                Toast.makeText(holder.itemView.getContext(), "File doesn't exists", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.show();
+                }
+
             });
-
         }
+    }
 
-
+    private void DeleteForGroup(int position, MessageViewHolder holder)
+    {
+        DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
+        rootReference.child("Groups")
+                .child(userMessagesList.get(position).getGroup_id())
+                .child(userMessagesList.get(position).getMessageID()) //getting unique message id
+                .removeValue().addOnCompleteListener(task -> {
+            if(task.isSuccessful())
+            {
+                userMessagesList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position,userMessagesList.size());
+                Toast.makeText(holder.itemView.getContext(), "Deleted successfully...", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(holder.itemView.getContext(), "Error Occurred...", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void Day(int position, Messages messages, MessageViewHolder holder)
@@ -804,7 +1206,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private void DeleteSentMessages(final int position, final MessageViewHolder holder)
     {
-
         DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
         rootReference.child("Messages")
                 .child(userMessagesList.get(position).getFrom()) //getting sender id

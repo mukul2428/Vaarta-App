@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -129,7 +130,7 @@ public class FindFriendActivity extends AppCompatActivity {
                             holder.userName.setVisibility(View.GONE);
                             holder.userStatus.setVisibility(View.GONE);
                             holder.profileImage.setVisibility(View.GONE);
-                            holder.linearLayout.setVisibility(View.GONE);
+                            holder.relativeLayout.setVisibility(View.GONE);
                         }
 
                     }
@@ -156,7 +157,7 @@ public class FindFriendActivity extends AppCompatActivity {
 
         TextView userName, userStatus;
         CircleImageView profileImage;
-        LinearLayout linearLayout;
+        RelativeLayout relativeLayout;
 
         //constructor
         public FindFriendsViewHolder(@NonNull View itemView)
@@ -166,7 +167,7 @@ public class FindFriendActivity extends AppCompatActivity {
             userName = itemView.findViewById(R.id.user_profile_name2);
             userStatus= itemView.findViewById(R.id.user_status2);
             profileImage = itemView.findViewById(R.id.users_profile_image2);
-            linearLayout = itemView.findViewById(R.id.linear_layout);
+            relativeLayout = itemView.findViewById(R.id.relative_layout);
 
         }
     }

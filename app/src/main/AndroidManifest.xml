@@ -17,9 +17,13 @@
         android:supportsRtl="true"
         android:testOnly="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".GroupChatActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
+        <activity android:name=".ListMembersActivity"></activity>
+        <activity
+            android:name=".AddMembersActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".GroupChatActivity"
+            android:parentActivityName=".MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

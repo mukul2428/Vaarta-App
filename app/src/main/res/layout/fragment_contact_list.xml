@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.ContactFragment"
+    tools:context=".Fragments.ContactListFragment"
     android:background="@color/colorBackground">
 
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contacts_list"
+        android:id="@+id/contact_List"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"/>
@@ -22,21 +21,6 @@
         android:textSize="40sp"
         android:fontFamily="sans-serif"
         android:visibility="visible"
-        android:id="@+id/main_text2"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/floating_button"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/send_message"
-        android:visibility="invisible">
-
-
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+        android:id="@+id/main_text21"/>
 
 </RelativeLayout>

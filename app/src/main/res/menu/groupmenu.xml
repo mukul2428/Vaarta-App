@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Add Friends"
+        android:id="@+id/add_friends_group"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:title="Exit Group"
+        android:id="@+id/exit_group"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:title="All Members"
+        android:id="@+id/all_members"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:title="Delete Group"
+        android:id="@+id/delete_group"
+        app:showAsAction="never">
+    </item>
+
+
+</menu>

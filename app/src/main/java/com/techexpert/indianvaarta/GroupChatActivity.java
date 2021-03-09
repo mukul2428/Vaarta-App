@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -214,6 +216,21 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        MainActivity.UpdateUserStatus("online");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        MainActivity.UpdateUserStatus("offline");
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
@@ -263,6 +280,7 @@ public class GroupChatActivity extends AppCompatActivity {
                                     messageFile.put("type", checker);
                                     messageFile.put("from",FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     messageFile.put("to", "");
+                                    messageFile.put("group_id",CurrentGroupID);
                                     messageFile.put("messageID",messagePushId);
                                     messageFile.put("time",currentTime);
                                     messageFile.put("date",currentDate);
@@ -374,6 +392,7 @@ public class GroupChatActivity extends AppCompatActivity {
                         messageImageBody.put("type", checker);
                         messageImageBody.put("from",FirebaseAuth.getInstance().getCurrentUser().getUid());
                         messageImageBody.put("to", "");
+                        messageImageBody.put("group_id",CurrentGroupID);
                         messageImageBody.put("messageID",messagePushId);
                         messageImageBody.put("time",currentTime);
                         messageImageBody.put("date",currentDate);
@@ -517,7 +536,8 @@ public class GroupChatActivity extends AppCompatActivity {
             messageInfoMap.put("name", currentUserName);
             messageInfoMap.put("message", message);
             messageInfoMap.put("date", currentDate);
-            messageInfoMap.put("time", currentTime);;
+            messageInfoMap.put("time", currentTime);
+            messageInfoMap.put("group_id",CurrentGroupID);
             messageInfoMap.put("type", "text");
             messageInfoMap.put("from",FirebaseAuth.getInstance().getCurrentUser().getUid());
             messageInfoMap.put("to", "");
@@ -526,6 +546,91 @@ public class GroupChatActivity extends AppCompatActivity {
             GroupMessageKeyRef.updateChildren(messageInfoMap);
 
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.groupmenu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        if(item.getItemId()==R.id.add_friends_group)
+        {
+            ContactList();
+        }
+        if(item.getItemId()==R.id.exit_group)
+        {
+            ExitGroup();
+        }
+        if(item.getItemId()==R.id.all_members)
+        {
+            ListOfAllMembers();
+        }
+        if(item.getItemId()==R.id.delete_group)
+        {
+            Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
+
+    private void ListOfAllMembers()
+    {
+        Intent intent = new Intent(this,ListMembersActivity.class);
+        intent.putExtra("group_id",CurrentGroupID);
+        startActivity(intent);
+    }
+
+    private void ExitGroup()
+    {
+        DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
+        rootReference.child("Users")
+                .child(currentUserID)
+                .child("Group")
+                .child(CurrentGroupID).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if(Objects.requireNonNull(snapshot.getValue()).toString().equals("Admin"))
+                            Toast.makeText(GroupChatActivity.this, "Can't Exit....You are Admin", Toast.LENGTH_SHORT).show();
+                        else
+                        {
+                            rootReference.child("Users")
+                                    .child(currentUserID)
+                                    .child("Group")
+                                    .child(CurrentGroupID)
+                                    .removeValue().addOnCompleteListener(task -> {
+
+                                    });
+                            rootReference.child("Group").child(currentUserID)
+                                    .child(CurrentGroupID).removeValue()
+                                    .addOnCompleteListener(task -> {
+                                        Toast.makeText(GroupChatActivity.this, "Group Leaved", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(GroupChatActivity.this,MainActivity.class);
+                                        startActivity(intent);
+                                    });
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void ContactList()
+    {
+        Intent intent = new Intent(GroupChatActivity.this, AddMembersActivity.class);
+        intent.putExtra("group_id",getIntent().getStringExtra("visit_group_id"));
+        intent.putExtra("group_pic",getIntent().getStringExtra("group_image"));
+        intent.putExtra("group_name",getIntent().getStringExtra("visit_group_name"));
+        intent.putExtra("group_desc",getIntent().getStringExtra("group_desc"));
+        startActivity(intent);
     }
 
 }

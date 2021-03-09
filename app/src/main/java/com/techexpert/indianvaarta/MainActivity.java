@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.squareup.picasso.Callback;
@@ -44,6 +45,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.techexpert.indianvaarta.Fragments.ChatFragment;
 import com.techexpert.indianvaarta.Fragments.ContactFragment;
+import com.techexpert.indianvaarta.Fragments.ContactListFragment;
 import com.techexpert.indianvaarta.Fragments.GroupFragment;
 import com.techexpert.indianvaarta.Notifications.Token;
 
@@ -51,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity
                     fragment = new GroupFragment();
                     break;
                 case R.id.contacts:
-                    fragment = new ContactFragment();
+                    fragment = new ContactListFragment();
                     break;
             }
 
@@ -178,7 +181,20 @@ public class MainActivity extends AppCompatActivity
             return true;
         });
 
-        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+        FirebaseMessaging.getInstance ().getToken ()
+                .addOnCompleteListener ( task -> {
+                    if (!task.isSuccessful ()) {
+                        //Could not get FirebaseMessagingToken
+                        return;
+                    }
+                    if (null != task.getResult ()) {
+                        //Got FirebaseMessagingToken
+                        String firebaseMessagingToken = Objects.requireNonNull(task.getResult ());
+                        updateToken(firebaseMessagingToken);
+                        //Use firebaseMessagingToken further
+                    }
+                } );
 
     }
 
@@ -531,7 +547,7 @@ public class MainActivity extends AppCompatActivity
     private void RequestNewGroup()
     {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this,R.style.AlertDialogTheme);
         builder.setTitle("Enter Group Name");
 
         LinearLayout layout = new LinearLayout(this);
@@ -542,7 +558,7 @@ public class MainActivity extends AppCompatActivity
         layout.addView(groupNameField);
 
         final EditText groupStatusField = new EditText(this);
-        groupStatusField.setHint("Status");
+        groupStatusField.setHint("Description");
         layout.addView(groupStatusField);
 
         builder.setView(layout);
@@ -554,7 +570,7 @@ public class MainActivity extends AppCompatActivity
 
             if(TextUtils.isEmpty(groupName) || TextUtils.isEmpty(groupStatus))
             {
-                Toast.makeText(MainActivity.this, "Please write Group Name...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Please write Group Name and Description...", Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -570,24 +586,24 @@ public class MainActivity extends AppCompatActivity
     {
 
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
+
+        DatabaseReference GroupMemberRef = FirebaseDatabase.getInstance().getReference().child("Group Members");
+
         rootRef.child("Groups").child(groupName);
         rootRef.child("Group").child(groupName);
         String key = rootRef.push().getKey();
-
-//        HashMap<String, Object> GroupInfoMap = new HashMap<>();
-//        GroupInfoMap.put("name", groupName);
-//        GroupInfoMap.put("status", groupStatus);
 
         rootRef.child("Groups").child(key).setValue("")
                 .addOnCompleteListener(task ->
                 {
                     if(task.isSuccessful())
                     {
-                        Toast.makeText(MainActivity.this, groupName+" group is created successfully...", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, groupName+" group is created successfully...", Toast.LENGTH_SHORT).show();
                     }
                 });
 
-        rootRef.child("Group").child(key).child("name").setValue(groupName)
+        String Id = mAuth.getInstance().getCurrentUser().getUid();
+        rootRef.child("Group").child(Id).child(key).child("name").setValue(groupName)
                 .addOnCompleteListener(task ->
                 {
                     if(task.isSuccessful())
@@ -595,7 +611,7 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, groupName+" group is created successfully...", Toast.LENGTH_SHORT).show();
                     }
                 });
-        rootRef.child("Group").child(key).child("status").setValue(groupStatus)
+        rootRef.child("Group").child(Id).child(key).child("status").setValue(groupStatus)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful())
                     {
@@ -603,12 +619,16 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-        groupRef.child("Group").child(key).setValue(groupName).addOnCompleteListener(task -> {
+        groupRef.child("Group").child(key).setValue("Admin").addOnCompleteListener(task -> {
 
             if(task.isSuccessful())
             {
 
             }
+        });
+
+        GroupMemberRef.child(key).child(Id).setValue("Admin").addOnCompleteListener(task -> {
+
         });
     }
 

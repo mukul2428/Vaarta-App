@@ -18,17 +18,19 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class PhoneLoginActivity extends AppCompatActivity {
-
-
+public class PhoneLoginActivity extends AppCompatActivity
+{
     private  Button sendVerificationCode, VerifyButton;
     private EditText InputPhoneNumber, InputVerificationCode;
 
@@ -36,7 +38,6 @@ public class PhoneLoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private String mVerificationId;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
 
     private ProgressDialog LoadingBar;
 
@@ -58,58 +59,51 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        sendVerificationCode.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
+        sendVerificationCode.setOnClickListener(v -> {
+
+            String phoneNumber = "+91"+InputPhoneNumber.getText().toString();
+
+            if(TextUtils.isEmpty(phoneNumber))
             {
+                Toast.makeText(PhoneLoginActivity.this, "Please enter phone number", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                LoadingBar.setTitle("Phone Verification");
+                LoadingBar.setMessage("Please wait, while we are authenticating your number...");
+                LoadingBar.setCanceledOnTouchOutside(false);
+                LoadingBar.show();
 
-                String phoneNumber = InputPhoneNumber.getText().toString();
-
-                if(TextUtils.isEmpty(phoneNumber))
-                {
-                    Toast.makeText(PhoneLoginActivity.this, "Please enter phone number", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    LoadingBar.setTitle("Phone Verification");
-                    LoadingBar.setMessage("Please wait, while we are authenticating your number...");
-                    LoadingBar.setCanceledOnTouchOutside(false);
-                    LoadingBar.show();
-
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            phoneNumber,        // Phone number to verify
-                            60,                 // Timeout duration
-                            TimeUnit.SECONDS,   // Unit of timeout
-                            PhoneLoginActivity.this,               // Activity (for callback binding)
-                            callbacks);        // OnVerificationStateChangedCallbacks
-                }
+                PhoneAuthOptions options =
+                        PhoneAuthOptions.newBuilder(mAuth)
+                                .setPhoneNumber(phoneNumber)       // Phone number to verify
+                                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                                .setActivity(this)                 // Activity (for callback binding)
+                                .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks
+                                .build();
+                PhoneAuthProvider.verifyPhoneNumber(options);
             }
         });
 
-        VerifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
+        VerifyButton.setOnClickListener(v -> {
+
+            sendVerificationCode.setVisibility(View.INVISIBLE);
+            InputPhoneNumber.setVisibility(View.INVISIBLE);
+
+            String verificationCode = InputVerificationCode.getText().toString();
+            if(TextUtils.isEmpty(verificationCode))
             {
+                Toast.makeText(PhoneLoginActivity.this, "Please enter the code", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                LoadingBar.setTitle("Code Verification");
+                LoadingBar.setMessage("Please wait, while we are verifying your code...");
+                LoadingBar.setCanceledOnTouchOutside(false);
+                LoadingBar.show();
 
-                sendVerificationCode.setVisibility(View.INVISIBLE);
-                InputPhoneNumber.setVisibility(View.INVISIBLE);
-
-                String verificationCode = InputVerificationCode.getText().toString();
-                if(TextUtils.isEmpty(verificationCode))
-                {
-                    Toast.makeText(PhoneLoginActivity.this, "Please enter the code", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    LoadingBar.setTitle("Code Verification");
-                    LoadingBar.setMessage("Please wait, while we are verifying your code...");
-                    LoadingBar.setCanceledOnTouchOutside(false);
-                    LoadingBar.show();
-
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
-                    signInWithPhoneAuthCredential(credential);
-                }
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
+                signInWithPhoneAuthCredential(credential);
             }
         });
 
@@ -142,7 +136,6 @@ public class PhoneLoginActivity extends AppCompatActivity {
                 // by combining the code with a verification ID.
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
-                mResendToken = token;
                 LoadingBar.dismiss();
 
                 Toast.makeText(PhoneLoginActivity.this, "Verification Code sent successfully", Toast.LENGTH_SHORT).show();
@@ -159,43 +152,35 @@ public class PhoneLoginActivity extends AppCompatActivity {
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential)
     {
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful())
                     {
-                        if (task.isSuccessful())
-                        {
+                        final String currentUserId = mAuth.getCurrentUser().getUid();
 
-                            final String currentUserId = mAuth.getCurrentUser().getUid();
-
-                            FirebaseInstanceId.getInstance().getInstanceId()
-                                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                            if (task.isSuccessful())
-                                            {
-                                                String token = task.getResult().getToken();
-
-                                                UsersRef.child(currentUserId).child("device_token")
-                                                        .setValue(token);
-                                                LoadingBar.dismiss();
-                                                Toast.makeText(PhoneLoginActivity.this, "Logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                                sendUserToMainActivity();
-                                            }
-                                            else
-                                            {
-                                                String message = task.getException().toString();
-                                                Toast.makeText(PhoneLoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                        }
-                        else
-                        {
-                            // Sign in failed
-                            String message = task.getException().toString();
-                            Toast.makeText(PhoneLoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
-                        }
+                        FirebaseMessaging.getInstance ().getToken ()
+                                .addOnCompleteListener ( task1 -> {
+                                    if (!task1.isSuccessful ()) {
+                                        //Could not get FirebaseMessagingToken
+                                        String message = task1.getException().toString();
+                                        Toast.makeText(PhoneLoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    if (null != task1.getResult ()) {
+                                        //Got FirebaseMessagingToken
+                                        String firebaseMessagingToken = Objects.requireNonNull(task1.getResult ());
+                                        UsersRef.child(currentUserId).child("device_token")
+                                                .setValue(firebaseMessagingToken);
+                                        LoadingBar.dismiss();
+                                        Toast.makeText(PhoneLoginActivity.this, "Logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                        sendUserToMainActivity();
+                                    }
+                                } );
+                    }
+                    else
+                    {
+                        // Sign in failed
+                        String message = task.getException().toString();
+                        Toast.makeText(PhoneLoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
