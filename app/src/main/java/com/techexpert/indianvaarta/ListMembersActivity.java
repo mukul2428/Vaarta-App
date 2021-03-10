@@ -67,29 +67,13 @@ public class ListMembersActivity extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        MainActivity.UpdateUserStatus("online");
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        MainActivity.UpdateUserStatus("offline");
-    }
-
     @Override
     public void onStart()
     {
         super.onStart();
 
         //getting all info from firebase
-        FirebaseRecyclerOptions options =
+        FirebaseRecyclerOptions<contacts> options =
                 new FirebaseRecyclerOptions.Builder<contacts>()
                         .setQuery(AllMembersRef, contacts.class)
                         .build();
@@ -104,7 +88,6 @@ public class ListMembersActivity extends AppCompatActivity {
             {
 
                 final String ListUserID = getRef(position).getKey();
-
                 Log.e("myTag", ListUserID);
                 UsersRef.child(ListUserID).addValueEventListener(new ValueEventListener()
                 {
@@ -169,17 +152,32 @@ public class ListMembersActivity extends AppCompatActivity {
             @NonNull
             @Override
             //setting connection with the xml file
-            public ListMembersActivity.RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+            public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
             {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_display_layout2,parent,false);
-                ListMembersActivity.RequestViewHolder holder = new ListMembersActivity.RequestViewHolder(view);
-                return holder;
+                return new RequestViewHolder(view);
             }
         };
 
         myMemberList.setAdapter(adapter);
         adapter.startListening();
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        MainActivity.UpdateUserStatus("online");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        MainActivity.UpdateUserStatus("offline");
     }
 
 

@@ -17,10 +17,9 @@
         android:supportsRtl="true"
         android:testOnly="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".ListMembersActivity"></activity>
+        <activity android:name=".ListMembersActivity" />
         <activity
-            android:name=".AddMembersActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".AddMembersActivity"/>
         <activity
             android:name=".GroupChatActivity"
             android:parentActivityName=".MainActivity" />

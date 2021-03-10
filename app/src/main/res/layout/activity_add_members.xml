@@ -10,11 +10,38 @@
         layout="@layout/app_bar_layout">
     </include>
 
-    <FrameLayout
-        android:id="@+id/members_fragment"
-        android:background="@color/colorBackground"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contacts_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/group_members"/>
+        android:visibility="invisible"
+        android:layout_below="@id/group_members"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Contacts\n\t\t\t\tAvailable"
+        android:textColor="@color/colorEditText"
+        android:textSize="40sp"
+        android:fontFamily="sans-serif"
+        android:visibility="visible"
+        android:id="@+id/main_text2"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/floating_button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/send_message"
+        android:visibility="invisible">
+
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
 
 </RelativeLayout>

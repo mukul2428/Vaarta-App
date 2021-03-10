@@ -158,16 +158,19 @@ public class PhoneLoginActivity extends AppCompatActivity
                         final String currentUserId = mAuth.getCurrentUser().getUid();
 
                         FirebaseMessaging.getInstance ().getToken ()
-                                .addOnCompleteListener ( task1 -> {
-                                    if (!task1.isSuccessful ()) {
+                                .addOnCompleteListener ( task1 ->
+                                {
+                                    if (!task1.isSuccessful ())
+                                    {
                                         //Could not get FirebaseMessagingToken
                                         String message = task1.getException().toString();
                                         Toast.makeText(PhoneLoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
                                         return;
                                     }
-                                    if (null != task1.getResult ()) {
+                                    if (null != task1.getResult ())
+                                    {
                                         //Got FirebaseMessagingToken
-                                        String firebaseMessagingToken = Objects.requireNonNull(task1.getResult ());
+                                        String firebaseMessagingToken = Objects.requireNonNull(task1.getResult());
                                         UsersRef.child(currentUserId).child("device_token")
                                                 .setValue(firebaseMessagingToken);
                                         LoadingBar.dismiss();

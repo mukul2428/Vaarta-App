@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -57,14 +58,7 @@ public class LoginActivity extends AppCompatActivity
         });
 
 
-        LoginButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                AllowUserToLogin();
-            }
-        });
+        LoginButton.setOnClickListener(view -> AllowUserToLogin());
 
         PhoneLoginButton.setOnClickListener(new View.OnClickListener()
         {
@@ -113,53 +107,46 @@ public class LoginActivity extends AppCompatActivity
             loadingBar.show();
 
             mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful())
                         {
-                            if (task.isSuccessful())
-                            {
-                                final String currentUserId = mAuth.getCurrentUser().getUid();
+                            final String currentUserId = mAuth.getCurrentUser().getUid();
 
-                                FirebaseInstanceId.getInstance().getInstanceId()
-                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>()
+                            FirebaseMessaging.getInstance ().getToken ()
+                                    .addOnCompleteListener ( task1 -> {
+                                        if (!task1.isSuccessful ())
                                         {
-                                            @Override
-                                            public void onComplete(@NonNull Task<InstanceIdResult> task)
-                                            {
-                                                if(task.isSuccessful())
-                                                {
-                                                    String token = task.getResult().getToken();
 
-                                                    UsersRef.child(currentUserId).child("device_token")
-                                                            .setValue(token)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task)
-                                                                {
-                                                                    if (task.isSuccessful())
-                                                                    {
-                                                                        SendUserToMainActivity();
-                                                                        Toast.makeText(LoginActivity.this, "Logged in Successful...", Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        String message = task.getException().toString();
-                                                                        Toast.makeText(LoginActivity.this, "Error : " + message, Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                    loadingBar.dismiss();
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        });
-                            }
-                            else
-                            {
-                                String message = task.getException().toString();
-                                Toast.makeText(LoginActivity.this, "Error : " + message, Toast.LENGTH_SHORT).show();
-                                loadingBar.dismiss();
-                            }
+                                        }
+                                        if (null != task1.getResult ())
+                                        {
+                                            //Got FirebaseMessagingToken
+                                            String token = task1.getResult();
+
+                                            UsersRef.child(currentUserId).child("device_token")
+                                                    .setValue(token)
+                                                    .addOnCompleteListener(task2 -> {
+                                                        if (task2.isSuccessful())
+                                                        {
+                                                            SendUserToMainActivity();
+                                                            Toast.makeText(LoginActivity.this, "Logged in Successful...", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        else
+                                                        {
+                                                            String message = task2.getException().toString();
+                                                            Toast.makeText(LoginActivity.this, "Error : " + message, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        loadingBar.dismiss();
+                                                    });
+                                        }
+                                    } );
+
+                        }
+                        else
+                        {
+                            String message = task.getException().toString();
+                            Toast.makeText(LoginActivity.this, "Error : " + message, Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
                         }
                     });
         }

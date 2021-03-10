@@ -587,50 +587,61 @@ public class GroupChatActivity extends AppCompatActivity {
     private void ExitGroup()
     {
         DatabaseReference rootReference = FirebaseDatabase.getInstance().getReference();
+//        rootReference.child("Users")
+//                .child(currentUserID)
+//                .child("Group")
+//                .child(CurrentGroupID).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists())
+//                {
+//                    if (Objects.requireNonNull(snapshot.getValue()).toString().equals("Admin"))
+//                        Toast.makeText(GroupChatActivity.this, "Can't Exit....You are Admin", Toast.LENGTH_SHORT).show();
+//                    else {
+//
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
         rootReference.child("Users")
                 .child(currentUserID)
                 .child("Group")
-                .child(CurrentGroupID).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                .child(CurrentGroupID)
+                .removeValue().addOnCompleteListener(task -> {
 
-                        if(Objects.requireNonNull(snapshot.getValue()).toString().equals("Admin"))
-                            Toast.makeText(GroupChatActivity.this, "Can't Exit....You are Admin", Toast.LENGTH_SHORT).show();
-                        else
-                        {
-                            rootReference.child("Users")
-                                    .child(currentUserID)
-                                    .child("Group")
-                                    .child(CurrentGroupID)
-                                    .removeValue().addOnCompleteListener(task -> {
-
-                                    });
-                            rootReference.child("Group").child(currentUserID)
-                                    .child(CurrentGroupID).removeValue()
-                                    .addOnCompleteListener(task -> {
-                                        Toast.makeText(GroupChatActivity.this, "Group Leaved", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(GroupChatActivity.this,MainActivity.class);
-                                        startActivity(intent);
-                                    });
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
+        });
+        rootReference.child("Group").child(currentUserID)
+                .child(CurrentGroupID).removeValue()
+                .addOnCompleteListener(task -> {
+                    Toast.makeText(GroupChatActivity.this, "Group Leaved", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(GroupChatActivity.this, MainActivity.class);
+                    startActivity(intent);
                 });
+        rootReference.child("Group Members")
+                .child(CurrentGroupID).child(currentUserID)
+                .removeValue().addOnCompleteListener(task -> {
+
+        });
+
     }
 
     private void ContactList()
     {
+
         Intent intent = new Intent(GroupChatActivity.this, AddMembersActivity.class);
-        intent.putExtra("group_id",getIntent().getStringExtra("visit_group_id"));
-        intent.putExtra("group_pic",getIntent().getStringExtra("group_image"));
-        intent.putExtra("group_name",getIntent().getStringExtra("visit_group_name"));
-        intent.putExtra("group_desc",getIntent().getStringExtra("group_desc"));
+        intent.putExtra("group_id", getIntent().getStringExtra("visit_group_id"));
+        intent.putExtra("group_pic", getIntent().getStringExtra("group_image"));
+        intent.putExtra("group_name", getIntent().getStringExtra("visit_group_name"));
+        intent.putExtra("group_desc", getIntent().getStringExtra("group_desc"));
         startActivity(intent);
+
     }
 
 }

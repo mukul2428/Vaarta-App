@@ -3,10 +3,13 @@ package com.techexpert.indianvaarta;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -58,6 +61,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.os.Handler;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -560,6 +564,40 @@ public class ChatActivity extends AppCompatActivity
 
     private void DisplayLastSeen()
     {
+        final Handler handler = new Handler();
+        MessageInputText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                RootRef.child("Users").child(messageSenderID).child("userState").child("state").setValue("typing...").addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(userStoppedTyping,1200);
+            }
+            Runnable userStoppedTyping = new Runnable() {
+                @Override
+                public void run() {
+                    RootRef.child("Users").child(messageSenderID).child("userState").child("state").setValue("online").addOnCompleteListener(task -> {
+
+                    });
+                }
+            };
+        });
+
         RootRef.child("Users").child(messageReceiverID).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -574,11 +612,18 @@ public class ChatActivity extends AppCompatActivity
                     //checking state if online or offline
                     if(state.equals("online"))
                     {
+                        userLastSeen.setTextColor(Color.WHITE);
                         userLastSeen.setText("Online");
                     }
                     else if(state.equals("offline"))
                     {
+                        userLastSeen.setTextColor(Color.WHITE);
                         userLastSeen.setText("Last Seen: "+ date +" "+ time);
+                    }
+                    else if(state.equals("typing..."))
+                    {
+                        userLastSeen.setText("typing...");
+                        userLastSeen.setTextColor(Color.GREEN);
                     }
                 }
                 //for those who have not updated their user profile and had just had just made the id
@@ -691,8 +736,7 @@ public class ChatActivity extends AppCompatActivity
                         public void onDataChange(@NonNull DataSnapshot snapshot)
                         {
                             String s = snapshot.child("state").getValue().toString();
-                            //String time = snapshot.child("time").getValue().toString();
-                            if(s.equals("offline"))
+                            if(s.equals("offline") && notify)
                             {
                                 apiService.sendNotification(sender)
                                         .enqueue(new retrofit2.Callback<MyResponse>() {
@@ -708,8 +752,6 @@ public class ChatActivity extends AppCompatActivity
                                             }
                                         });
                             }
-                            else
-                                notify = false;
                         }
 
                         @Override

@@ -1,6 +1,7 @@
 package com.techexpert.indianvaarta.Fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,11 +162,18 @@ public class ChatFragment extends Fragment
                                 //checking state if online or offline
                                 if(state.equals("online"))
                                 {
+                                    holder.user_status.setTextColor(Color.WHITE);
                                     holder.user_status.setText("Online");
                                 }
                                 else if(state.equals("offline"))
                                 {
+                                    holder.user_status.setTextColor(Color.WHITE);
                                     holder.user_status.setText("Last Seen: "+ date +" "+ time);
+                                }
+                                else if(state.equals("typing..."))
+                                {
+                                    holder.user_status.setText("typing...");
+                                    holder.user_status.setTextColor(Color.GREEN);
                                 }
                             }
                             //for those who have not updated their user profile and had just had just made the id

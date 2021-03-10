@@ -21,6 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -104,11 +107,19 @@ public class RegisterActivity extends AppCompatActivity {
                         if(task.isSuccessful())
                         {
 
-                            FirebaseInstanceId.getInstance().getInstanceId()
-                                    .addOnCompleteListener(task1 -> {
-                                        if(task1.isSuccessful())
+                            FirebaseMessaging.getInstance ().getToken ()
+                                    .addOnCompleteListener ( task1 -> {
+                                        if (!task1.isSuccessful ())
                                         {
-                                            String token = task1.getResult().getToken();
+                                            //Could not get FirebaseMessagingToken
+                                            String message= task1.getException().toString();
+                                            Toast.makeText(RegisterActivity.this, "Error :"+ message, Toast.LENGTH_LONG).show();
+                                            loadingBar.dismiss();
+                                        }
+                                        if (null != task1.getResult ())
+                                        {
+                                            //Got FirebaseMessagingToken
+                                            String token = task1.getResult();
 
                                             String currentUserID = mAuth.getCurrentUser().getUid();
 
@@ -121,13 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             Toast.makeText(RegisterActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
                                             loadingBar.dismiss();
                                         }
-                                        else
-                                            {
-                                                String message= task1.getException().toString();
-                                                Toast.makeText(RegisterActivity.this, "Error :"+ message, Toast.LENGTH_LONG).show();
-                                                loadingBar.dismiss();
-                                            }
-                                    });
+                                    } );
                         }
                         else
                         {
