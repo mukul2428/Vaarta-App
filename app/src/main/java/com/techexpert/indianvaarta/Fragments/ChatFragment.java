@@ -21,13 +21,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.techexpert.indianvaarta.ChatActivity;
-import com.techexpert.indianvaarta.LoginActivity;
-import com.techexpert.indianvaarta.Notifications.Token;
+import com.techexpert.indianvaarta.Activities.ChatActivity;
+import com.techexpert.indianvaarta.Activities.LoginActivity;
 import com.techexpert.indianvaarta.R;
 import com.techexpert.indianvaarta.contacts;
 

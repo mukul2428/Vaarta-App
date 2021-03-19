@@ -1,11 +1,10 @@
-package com.techexpert.indianvaarta;
+package com.techexpert.indianvaarta.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.techexpert.indianvaarta.R;
+import com.techexpert.indianvaarta.contacts;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

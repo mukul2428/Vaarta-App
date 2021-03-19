@@ -1,4 +1,4 @@
-package com.techexpert.indianvaarta;
+package com.techexpert.indianvaarta.Activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -41,6 +41,7 @@ import com.techexpert.indianvaarta.Fragments.ChatFragment;
 import com.techexpert.indianvaarta.Fragments.ContactListFragment;
 import com.techexpert.indianvaarta.Fragments.GroupFragment;
 import com.techexpert.indianvaarta.Notifications.Token;
+import com.techexpert.indianvaarta.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

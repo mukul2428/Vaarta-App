@@ -17,12 +17,12 @@
         android:supportsRtl="true"
         android:testOnly="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".ListMembersActivity" />
+        <activity android:name=".Activities.ListMembersActivity" />
         <activity
-            android:name=".AddMembersActivity"/>
+            android:name=".Activities.AddMembersActivity"/>
         <activity
-            android:name=".GroupChatActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".Activities.GroupChatActivity"
+            android:parentActivityName=".Activities.MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -48,28 +48,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChatActivity"
-            android:parentActivityName=".LoginActivity" />
+            android:name=".Activities.ChatActivity"
+            android:parentActivityName=".Activities.LoginActivity" />
         <activity
-            android:name=".LoginProfileActivity"
-            android:parentActivityName=".LoginActivity" />
+            android:name=".Activities.LoginProfileActivity"
+            android:parentActivityName=".Activities.LoginActivity" />
         <activity
-            android:name=".ReceivedRequestActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".Activities.ReceivedRequestActivity"
+            android:parentActivityName=".Activities.MainActivity" />
         <activity
-            android:name=".SentRequestActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".ProfileActivity" />
+            android:name=".Activities.SentRequestActivity"
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity android:name=".Activities.ProfileActivity" />
         <activity
-            android:name=".FindFriendActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".PhoneLoginActivity" />
+            android:name=".Activities.FindFriendActivity"
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity android:name=".Activities.PhoneLoginActivity" />
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity" />
+            android:name=".Activities.SettingsActivity"
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity android:name=".Activities.RegisterActivity" />
+        <activity android:name=".Activities.LoginActivity" />
+        <activity android:name=".Activities.MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

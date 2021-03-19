@@ -11,9 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,16 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.techexpert.indianvaarta.ChatActivity;
-import com.techexpert.indianvaarta.GroupChatActivity;
+import com.techexpert.indianvaarta.Activities.GroupChatActivity;
 import com.techexpert.indianvaarta.GroupContacts;
 import com.techexpert.indianvaarta.R;
-import com.techexpert.indianvaarta.contacts;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

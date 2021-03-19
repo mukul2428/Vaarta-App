@@ -5,27 +5,21 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.techexpert.indianvaarta.ChatActivity;
-import com.techexpert.indianvaarta.MainActivity;
+import com.techexpert.indianvaarta.Activities.ChatActivity;
 import com.techexpert.indianvaarta.R;
-import com.techexpert.indianvaarta.ReceiverID;
 
 public class FirebaseMessaging extends FirebaseMessagingService
 {

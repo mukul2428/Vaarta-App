@@ -1,4 +1,4 @@
-package com.techexpert.indianvaarta;
+package com.techexpert.indianvaarta.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,16 +43,19 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.techexpert.indianvaarta.MessageAdapter;
+import com.techexpert.indianvaarta.Messages;
 import com.techexpert.indianvaarta.Notifications.APIService;
 import com.techexpert.indianvaarta.Notifications.Client;
 import com.techexpert.indianvaarta.Notifications.Data;
 import com.techexpert.indianvaarta.Notifications.MyResponse;
 import com.techexpert.indianvaarta.Notifications.Sender;
 import com.techexpert.indianvaarta.Notifications.Token;
+import com.techexpert.indianvaarta.R;
+import com.techexpert.indianvaarta.contacts;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

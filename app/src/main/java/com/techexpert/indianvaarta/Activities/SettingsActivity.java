@@ -1,4 +1,4 @@
-package com.techexpert.indianvaarta;
+package com.techexpert.indianvaarta.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.techexpert.indianvaarta.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -77,29 +76,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         InitializeFields();
 
-        UpdateAccountSettings.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                UpdateSettings();
-            }
-        });
+        UpdateAccountSettings.setOnClickListener(v -> UpdateSettings());
 
         //using this method when user from main activity goes to setting activity
         RetrieveUserInfo();
 
-        userProfileImage.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*");
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GalleryPick);
+        userProfileImage.setOnClickListener(v -> {
+            Intent galleryIntent = new Intent();
+            galleryIntent.setType("image/*");
+            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GalleryPick);
 
-            }
         });
     }
 
@@ -179,101 +166,30 @@ public class SettingsActivity extends AppCompatActivity {
 
                 //uploading Image
                 UploadTask uploadTask = filePath.putBytes(Data);
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                uploadTask.addOnSuccessListener(taskSnapshot -> filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>()
                 {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    public void onComplete(@NonNull Task<Uri> task)
                     {
+                        final String downloadUrl = task.getResult().toString();
 
-                        filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>()
-                        {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task)
-                            {
-                                final String downloadUrl = task.getResult().toString();
-
-                                //putting node inside the Users node as image
-                                RootRef.child("Users").child(currentUserID).child("image")
-                                        .setValue(downloadUrl)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>()
-                                        {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task)
-                                            {
-                                                if (task.isSuccessful())
-                                                {
-                                                    Toast.makeText(SettingsActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
-                                                }
-                                                else
-                                                {
-                                                    String message = task.getException().toString();
-                                                    Toast.makeText(SettingsActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
-                                                }
-                                                loadingBar.dismiss();
-                                            }
-                                        });
-                            }
-                        });
+                        //putting node inside the Users node as image
+                        RootRef.child("Users").child(currentUserID).child("image")
+                                .setValue(downloadUrl)
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful())
+                                    {
+                                        Toast.makeText(SettingsActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        String message = task1.getException().toString();
+                                        Toast.makeText(SettingsActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                                    }
+                                    loadingBar.dismiss();
+                                });
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        Toast.makeText(SettingsActivity.this, "Failed to Upload", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-
-
-                /*filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
-                    {
-
-                        if(task.isSuccessful())
-                        {
-                            filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>()
-                            {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task)
-                                {
-                                    final String downloadUrl = task.getResult().toString();
-
-                                    //putting node inside the Users node as image
-                                    RootRef.child("Users").child(currentUserID).child("image")
-                                            .setValue(downloadUrl)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>()
-                                            {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task)
-                                                {
-                                                    if (task.isSuccessful())
-                                                    {
-                                                        Toast.makeText(SettingsActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    else
-                                                    {
-                                                        String message = task.getException().toString();
-                                                        Toast.makeText(SettingsActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    loadingBar.dismiss();
-                                                }
-                                            });
-                                }
-                            });
-
-                        }
-                        else
-                        {
-                            String message = task.getException().toString();
-                            Toast.makeText(SettingsActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
-                            loadingBar.dismiss();
-                        }
-
-                    }
-                });*/
+                })).addOnFailureListener(e -> Toast.makeText(SettingsActivity.this, "Failed to Upload", Toast.LENGTH_SHORT).show());
 
             }
         }
