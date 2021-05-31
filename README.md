@@ -1,12 +1,15 @@
 # Vaarta-App
-This is WhatsApp Clone with some awesome features. Some features of this app are as follows:-
-1. Send message to each other
-2. Authentication using email and mobile number
-3. Set Status and Profile Image
-4. Notification feature
-5. Send image, pdf and docx to each other
-6. Invite friends on vaarta app
-7. Delete message(From me and from everyone feature)
-8. Send friend request to others to whom you want to chat
-9. Can accept and delete friend request
-10. Last seen feature
+WhatsApp Clone App Built using Java and Firebase Database and have some awesome features. Some features of this app are:-
+* SignUp and LogIn feature with Firebase
+* Phone Authentication(Login)
+* Update Sender Details(Profile Image, Status)
+* Send Messages to friends
+* Send Photos and Documents to friends
+* Send Friend Request for chatting
+* Last Seen and typing indicator
+* Create group feature
+* Chatting in group, Add new Member, Remove Member, Delete Group
+* Notification Feature using FCM
+* Delete messages (From Me and From Everyone)
+* Invite Friends on app(Dynamic link)
+
